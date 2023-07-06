@@ -1,0 +1,14 @@
+environment: 'develop'
+app:
+  name: 'hr_management_system'
+  version: '1.0.0'
+jwt: 
+  lifecycle: 600
+  secret: 'gn0hp01243'
+database:
+  type: 'mysql'
+  name: 'hr_management_system'
+  user: 'gn0hp'
+  password: '@Pt103682912'
+  host: 'localhost'
+  port: 3306

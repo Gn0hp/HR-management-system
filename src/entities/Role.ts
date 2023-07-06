@@ -1,7 +1,7 @@
-import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
+import { Column, Entity, OneToMany } from 'typeorm';
 import { DefaultModel } from './DefaultModel';
-import { User } from './User';
-import { Permission } from './Permission';
+import { RolePermit } from './RolePermit';
+import { UserRole } from './UserRole';
 
 @Entity()
 export class Role extends DefaultModel {
@@ -14,9 +14,9 @@ export class Role extends DefaultModel {
   @Column()
   note: string;
 
-  @ManyToOne(() => User, (user) => user.roles)
-  user: User;
+  @OneToMany(() => UserRole, (userRole) => userRole.role)
+  userRoles: UserRole[];
 
-  @OneToMany(() => Permission, (permission) => permission.role)
-  permissions: Permission[];
+  @OneToMany(() => RolePermit, (rolePermit) => rolePermit.role)
+  rolePermits: RolePermit[];
 }

@@ -1,6 +1,7 @@
 import { Column, Entity, OneToMany } from 'typeorm';
 import { DefaultModel } from './DefaultModel';
-import { Role } from './Role';
+import { EmployeeForm } from './EmployeeForm';
+import { UserRole } from './UserRole';
 
 @Entity()
 export class User extends DefaultModel {
@@ -37,6 +38,12 @@ export class User extends DefaultModel {
   @Column()
   password: string;
 
-  @OneToMany(() => Role, (role) => role.user)
-  roles: Role[];
+  @Column()
+  status: string;
+
+  @OneToMany(() => UserRole, (userRole) => userRole.user)
+  userRoles: UserRole[];
+
+  @OneToMany(() => EmployeeForm, (employeeForm) => employeeForm.user)
+  employeeForms: EmployeeForm[];
 }
