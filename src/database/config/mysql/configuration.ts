@@ -12,14 +12,14 @@ export function parseConfig(): TypeOrmModuleOptions {
   const YAML_CONFIG_FILENAME = 'config.yaml';
   const config = yamlParser(YAML_CONFIG_FILENAME);
   return {
-    type: config.database.type ?? 'mysql',
-    host: config.database.host ?? 'localhost',
-    port: parseInt(config.database.port) ?? 3306,
-    username: config.database.user ?? 'root',
-    password: config.database.password ?? 'root',
-    database: config.database.name ?? 'hr_management_system',
+    type: 'mysql',
+    host: config.database.mysql.host ?? 'localhost',
+    port: parseInt(config.database.mysql.port) ?? 3306,
+    username: config.database.mysql.user ?? 'root',
+    password: config.database.mysql.password ?? 'root',
+    database: config.database.mysql.name ?? 'hr_management_system',
     entities:
-      [User, Role, Permission, UserRole, RolePermit, Form, EmployeeForm] ?? [],
+      [Role, Permission, UserRole, RolePermit, Form, EmployeeForm] ?? [],
     // entities: [__dirname + '/**/*.entity{.ts,.js}'] ?? [],
     synchronize: true,
     logging: true,

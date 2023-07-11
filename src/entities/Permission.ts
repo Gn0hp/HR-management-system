@@ -7,13 +7,17 @@ export class Permission extends DefaultModel {
   @Column()
   name: string;
 
-  @Column()
+  @Column({
+    nullable: true,
+  })
   description: string;
 
   @Column()
   status: string;
 
-  @Column()
+  @Column({
+    nullable: true,
+  })
   note: string;
 
   @OneToMany(() => RolePermit, (rolePermit) => rolePermit.permission)

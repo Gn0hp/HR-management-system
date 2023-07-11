@@ -1,18 +1,27 @@
+import { DeleteResult } from 'typeorm';
 import { EntityId } from 'typeorm/repository/EntityId';
-export interface IBaseService<T> {
-  findAll(): Promise<T[]>;
+export interface IBaseService {
+  findAll();
 
-  findById(id: EntityId): Promise<T>;
+  /*options: { id: 1, name: 'abc',..}*/
+  findById(options);
+  /* options: { status: Not('INACTIVE'), 
+                amount: LessThan(10),  LessThanOrEqual, Morethan, Equal, Like('%abc%'),
+                id: IN([1,2,3]) Any
+              }*/
+  findByIds(options);
 
-  findByIds(id: [EntityId]): Promise<T[]>;
+  findOneByOptions(options);
 
-  save(entity: T): Promise<T>;
+  findByOptions(options);
 
-  saveInBatch(entities: T[], batch: number): Promise<T[]>;
+  save(entity);
 
-  update(id: EntityId, entity: T): Promise<T>;
+  // saveInBatch(entities: T[], batch: number): Promise<T>;
 
-  updateInBatch(id: EntityId[], entity: T): Promise<T[]>;
+  update(id, entity);
 
-  delete(id: EntityId): Promise<T>;
+  updateInBatch(id, entities, batch: number);
+
+  delete(id: EntityId): Promise<DeleteResult>;
 }

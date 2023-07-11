@@ -15,6 +15,9 @@ import { UserRoleModuleModule } from './modules/user-role-module/user-role-modul
 import { RolePermitModuleModule } from './modules/role-permit-module/role-permit-module.module';
 import { EmployeeFormModuleModule } from './modules/employee-form-module/employee-form-module.module';
 import { FormModuleModule } from './modules/form-module/form-module.module';
+import { redisParseConfig } from './database/config/redis/configuration';
+import { RedisModule } from '@liaoliaots/nestjs-redis';
+import { AuthModuleModule } from './modules/auth-module/auth-module.module';
 
 @Module({
   imports: [
@@ -25,9 +28,15 @@ import { FormModuleModule } from './modules/form-module/form-module.module';
     PermissionModuleModule,
     EmployeeFormModuleModule,
     FormModuleModule,
+    AuthModuleModule,
 
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.register(parseJwtConfig()),
+    RedisModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: () => redisParseConfig(),
+    }),
     ConfigModule.forRoot({
       isGlobal: true,
       load: [() => yamlParser('config.yaml')],

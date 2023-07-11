@@ -3,7 +3,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Permission } from 'src/entities/Permission';
 import { PermissionControllerController } from './permission-controller.controller';
 import { PermissionService } from './permission-service';
-import { Type } from 'js-yaml';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Permission])],

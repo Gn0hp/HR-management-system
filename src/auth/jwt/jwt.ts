@@ -1,8 +1,14 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { PassportStrategy } from '@nestjs/passport';
+import {
+  CanActivate,
+  ExecutionContext,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { yamlParser } from 'src/commons/yamlParser';
-import { Strategy, ExtractJwt } from 'passport-jwt';
-import { JwtPayload } from './jwtPayload';
+import { Observable } from 'rxjs';
+import { JwtService } from '@nestjs/jwt';
+import { Request } from 'express';
+import { ConfigService } from '@nestjs/config';
 
 export function parseJwtConfig() {
   const YAML_CONFIG_FILENAME = 'config.yaml';
@@ -17,15 +23,31 @@ export function parseJwtConfig() {
 }
 
 @Injectable()
-export class JwtStrategy extends PassportStrategy(Strategy) {
-  constructor() {
-    super({
-      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-      secret: parseJwtConfig().secret,
-    });
+export class AuthGuard implements CanActivate {
+  constructor(
+    private jwtService: JwtService,
+    private readonly configService: ConfigService,
+  ) {}
+
+  private extractTokenFromHeader(req: Request): string | undefined {
+    const [type, token] = req.headers.authorization?.split(' ') ?? [];
+    return type === 'Bearer' ? token : undefined;
   }
-  async validate(payload: JwtPayload) {
-    // validate jwt here
-    throw new UnauthorizedException();
+  async canActivate(context: ExecutionContext): Promise<boolean> {
+    const req = context.switchToHttp().getRequest();
+    const token = this.extractTokenFromHeader(req);
+
+    if (!token) {
+      throw new UnauthorizedException();
+    }
+    try {
+      const payload = await this.jwtService.verifyAsync(token, {
+        secret: this.configService.get<string>('jwt.secret'),
+      });
+      req['user'] = payload;
+    } catch (err) {
+      throw new UnauthorizedException();
+    }
+    return true;
   }
 }

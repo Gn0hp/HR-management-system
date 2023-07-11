@@ -13,7 +13,9 @@ export class Form extends DefaultModel {
   @Column()
   link: string;
 
-  @Column()
+  @Column({
+    nullable: true,
+  })
   note: string;
 
   @Column()
@@ -22,7 +24,9 @@ export class Form extends DefaultModel {
   @Column()
   is_notified: boolean;
 
-  @Column()
+  @Column({
+    nullable: true,
+  })
   description: string;
   //   @ManyToOne(() => User, (user) => user.roles)
   //   user: User;

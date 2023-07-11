@@ -1,0 +1,21 @@
+environment: 'develop'
+app:
+  name: 'hr_management_system'
+  version: '1.0.0'
+jwt:
+  lifecycle: 600
+  secret: '<Your jwt token secret. Note to keep this secret>'
+database:
+  mysql: 
+    name: 'hr_management_system'
+    user: '<your username>'
+    password: '<your password>'
+    host: 'localhost'
+    port: 3306
+  redis:
+    host: 'localhost'
+    port: 6379
+    password: ''
+    db: 0
+    retryAttempts: 5
+    retryDelay: 1000

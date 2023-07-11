@@ -1,6 +1,5 @@
 import { Column, Entity, ManyToOne } from 'typeorm';
 import { DefaultModel } from './DefaultModel';
-import { User } from './User';
 import { Form } from './Form';
 
 @Entity()
@@ -18,6 +17,7 @@ export class EmployeeForm extends DefaultModel {
   //   permissions: Permission[];
   @ManyToOne(() => Form, (form) => form.employeeForms)
   form: Form;
-  @ManyToOne(() => User, (user) => user.employeeForms)
-  user: User;
+  // @ManyToOne(() => User, (user) => user.employeeForms)
+  @Column()
+  userId: number;
 }

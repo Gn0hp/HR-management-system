@@ -15,7 +15,10 @@ export class DefaultModel {
   })
   created_at: Date;
 
-  @Column()
+  @Column({
+    nullable: true,
+    type: 'timestamp',
+  })
   created_by: number; // id of user
 
   @UpdateDateColumn({
@@ -29,6 +32,8 @@ export class DefaultModel {
   })
   deleted_at: Date;
 
-  @Column()
+  @Column({
+    nullable: true,
+  })
   deleted_by: number; // id of user
 }

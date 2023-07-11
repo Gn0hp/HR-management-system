@@ -8,10 +8,14 @@ export class Role extends DefaultModel {
   @Column()
   name: string;
 
-  @Column()
+  @Column({
+    nullable: true,
+  })
   description: string;
 
-  @Column()
+  @Column({
+    nullable: true,
+  })
   note: string;
 
   @OneToMany(() => UserRole, (userRole) => userRole.role)

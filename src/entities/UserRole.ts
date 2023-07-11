@@ -1,6 +1,5 @@
 import { Column, Entity, ManyToOne } from 'typeorm';
 import { DefaultModel } from './DefaultModel';
-import { User } from './User';
 import { Role } from './Role';
 
 @Entity()
@@ -8,17 +7,22 @@ export class UserRole extends DefaultModel {
   @Column()
   name: string;
 
-  @Column()
+  @Column({
+    nullable: true,
+  })
   description: string;
 
   @Column()
   status: string;
 
-  @Column()
+  @Column({
+    nullable: true,
+  })
   note: string;
 
-  @ManyToOne(() => User, (user) => user.userRoles)
-  user: User;
+  // @ManyToOne(() => User, (user) => user.userRoles)
+  @Column()
+  userId: number;
 
   @ManyToOne(() => Role, (role) => role.userRoles)
   role: Role;

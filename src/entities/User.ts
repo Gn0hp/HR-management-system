@@ -1,11 +1,14 @@
-import { Column, Entity, OneToMany } from 'typeorm';
+import { Column } from 'typeorm';
 import { DefaultModel } from './DefaultModel';
 import { EmployeeForm } from './EmployeeForm';
 import { UserRole } from './UserRole';
 
-@Entity()
+// @Entity()
 export class User extends DefaultModel {
-  @Column()
+  @Column({
+    nullable: true,
+    //unique: true
+  })
   employee_id: number;
 
   @Column()
@@ -20,19 +23,27 @@ export class User extends DefaultModel {
   @Column()
   phone: string;
 
-  @Column()
+  @Column({
+    nullable: true,
+  })
   avatar: string;
 
   @Column()
   cccd_id: string;
 
-  @Column()
+  @Column({
+    nullable: true,
+  })
   bhxh_number: string;
 
-  @Column()
+  @Column({
+    nullable: true,
+  })
   address: string;
 
-  @Column()
+  @Column({
+    unique: true,
+  })
   username: string;
 
   @Column()
@@ -41,9 +52,9 @@ export class User extends DefaultModel {
   @Column()
   status: string;
 
-  @OneToMany(() => UserRole, (userRole) => userRole.user)
+  // @OneToMany(() => UserRole, (userRole) => userRole.user)
   userRoles: UserRole[];
 
-  @OneToMany(() => EmployeeForm, (employeeForm) => employeeForm.user)
+  // @OneToMany(() => EmployeeForm, (employeeForm) => employeeForm.user)
   employeeForms: EmployeeForm[];
 }

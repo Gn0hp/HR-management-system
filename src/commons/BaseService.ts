@@ -1,42 +1,34 @@
-// import { DefaultModel } from 'src/entities/DefaultModel';
-// import { In, Repository, FindOptionsWhere } from 'typeorm';
-// import { IBaseService } from './interfaces/IBaseService';
-// import { LoggerService } from '@nestjs/common';
+import { DeleteResult, Repository } from 'typeorm';
+import { EntityId } from 'typeorm/repository/EntityId';
+import { IBaseService } from './interfaces/IBaseService';
+import { InjectRepository } from '@nestjs/typeorm';
 
-// export class BaseService<T extends DefaultModel, R extends Repository<T>>
-//   implements IBaseService<T>
-// {
-//   protected readonly repository: R;
-//   protected readonly logger: LoggerService;
-
-//   constructor(repository: R, logger: LoggerService) {
-//     this.repository = repository;
-//     this.logger = logger;
-//   }
-//   findAll(): Promise<T[]> {
-//     return this.repository.find();
-//   }
-//   findById(
-//     id: FindOptionsWhere<T> | number | string | string[] | number[],
-//   ): Promise<T | null> {
-//     return this.repository.findOne({ id });
-//   }
-//   findByIds(ids: [EntityId]): Promise<T[]> {
-//     return this.repository.findBy({ id: In(ids) });
-//   }
-//   save(entity: T): Promise<T> {
-//     throw new Error('Method not implemented.');
-//   }
-//   saveInBatch(entities: T[], batch: number): Promise<T[]> {
-//     throw new Error('Method not implemented.');
-//   }
-//   update(id: EntityId, entity: T): Promise<T> {
-//     throw new Error('Method not implemented.');
-//   }
-//   updateInBatch(id: EntityId[], entity: T): Promise<T[]> {
-//     throw new Error('Method not implemented.');
-//   }
-//   delete(id: EntityId): Promise<T> {
-//     throw new Error('Method not implemented.');
-//   }
-// }
+export abstract class BaseService implements IBaseService {
+  findAll() {
+    throw new Error('Method not implemented.');
+  }
+  findById(options: any) {
+    throw new Error('Method not implemented.');
+  }
+  findByIds(options: any) {
+    throw new Error('Method not implemented.');
+  }
+  findOneByOptions(options: any) {
+    throw new Error('Method not implemented.');
+  }
+  findByOptions(options: any) {
+    throw new Error('Method not implemented.');
+  }
+  save(entity: any) {
+    throw new Error('Method not implemented.');
+  }
+  update(id: any, entity: any) {
+    throw new Error('Method not implemented.');
+  }
+  updateInBatch(id: any, entities: any, batch: number) {
+    throw new Error('Method not implemented.');
+  }
+  delete(id: EntityId): Promise<DeleteResult> {
+    throw new Error('Method not implemented.');
+  }
+}
