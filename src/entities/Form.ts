@@ -1,7 +1,6 @@
-import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
+import { Column, Entity, OneToMany } from 'typeorm';
 import { DefaultModel } from './DefaultModel';
-import { User } from './User';
-import { Permission } from './Permission';
+import { EmployeeForm } from './EmployeeForm';
 
 @Entity()
 export class Form extends DefaultModel {
@@ -14,17 +13,26 @@ export class Form extends DefaultModel {
   @Column()
   link: string;
 
-  @Column()
+  @Column({
+    nullable: true,
+  })
   note: string;
 
   @Column()
-  is_active: boolean;
+  status: string;
 
   @Column()
   is_notified: boolean;
+
+  @Column({
+    nullable: true,
+  })
+  description: string;
   //   @ManyToOne(() => User, (user) => user.roles)
   //   user: User;
 
   //   @OneToMany(() => Permission, (permission) => permission.role)
   //   permissions: Permission[];
+  @OneToMany(() => EmployeeForm, (employeeForm) => employeeForm.form)
+  employeeForms: EmployeeForm[];
 }

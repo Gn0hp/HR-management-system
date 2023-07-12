@@ -1,30 +1,52 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
-
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
-
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
-
+# HR Management Service 
+NestJS, TypeORM, Swagger, JWT, Passport, Mailer, MySQL, Docker
 ## Description
+```
+Hệ thống có các modules chính sau:        
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+- Quản lý users, roles, permission (1 user có thể có nhiều roles, một roles có nhiều permission) (permisson sẽ phân dựa trên 5 quyền cơ bản R, W, U, D, A (read, write, update, delete, approve)        
+Quản lý form thử việc (view, add, update, approve tùy từng role cụ thể sẽ được phép làm các quyền khác nhau)        
+- Quản lý form đánh giá định kỳ hàng năm        
+- Khi user login thành công cần cung cấp 1 api để lấy tất cả các quyền của user đang login (dựa vào token)        
+- Quản lý thông tin cá nhân (id, mã nhân viên, firstname, lastname, email, phone, avatar, cmnd, số số BHXH, phụ thuộc, address, …etc)        
+- Notifications        
+      +  Gửi email thông báo đến tất cả nhân viên khi (admin, HR) tạo một một form thử việc mới
+      +  Gửi email thông báo đến tất cả các nhân viên khi (admin, HR) tạo một form đánh giá định kỳ hàng năm mới
+- Report        
+       + Báo cáo tình trạng tất cả các nhân viên đã, chưa hoàn thành forms đánh giá thử việc
+       + Báo cáo tình trạng tất cả các nhân viên đã, chưa hoàn thành forms đánh giá định kỳ hàng năm
+        
+Hệ thống có 5 vài trò chính 
+       
+Admin        
+        - Có tất cả các quyền
+        - Tạo form thử việc cho tất cả user
+        - Tạo form đánh giá định kỳ hàng năm cho tất cả user
+        
+        
+Drirector        
+         Có tất cả các quyền của Empoyee, Manager, HR  
+        
+HR        
+        - Xem thông tin form thử việc của bản thân và tất cả các users có trong hệ thống
+        - Xem thông tin form đánh giá định kỳ hàng năm của bản thân và tất cả các users có trong hệ thống
+        - Có tất cả các quyền của Employee (vì HR cũng là employee, cũng sẽ có form thử việc, đánh giá)
+        - Xem báo cáo về tình trạng hoàn thành các forms thử việc của tất cả các nhân viên đang thử việc
+        - Xem báo cáo về tình trạng hoàn thành các forms đánh giá định kỳ hàng năm của tất cả các nhân viên trong công ty
+        - Tạo form thử việc cho tất cả user (Giống Admin)
+        - Tạo form đánh giá định kỳ hàng năm cho tất cả user (Giống Admin)
+        
+Manager        
+        - Xem, phê duyệt hoặc reject form thử việc (nếu manager reject thì form sẽ có trạng thái new, quay trở về status ban đầu, employee có thể sửa và submit lại)
+        - Xem, phê duyệt form đánh giá định kỳ hành năm
+        - Có tất cả các quyền của employee (vì manager cũng là cấp dưới của Director)
+        
+Employee        
+        - Xem, Sửa thông tin cá nhân (avatar, address, CMND, Số Sổ BHXH)
+        - Xem, Sửa, Submit Form đánh giá thử việc (cho manager trực tiếp, nếu employee thì gửi cho manager, nếu là manager thì gửi cho Director)
+        - Xem, Sửa, Gửi form đánh giá định kỳ hàng năm (cho manager trực tiếp, nếu employee thì gửi cho manager, nếu là manager thì gửi cho Director)
+
+```
 
 ## Installation
 
@@ -60,14 +82,5 @@ $ npm run test:cov
 
 ## Support
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+For more information, please [contact here](https://github.com/Gn0hp) or mail to [gn0hp289@gmail.com]() .
 
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](LICENSE).
