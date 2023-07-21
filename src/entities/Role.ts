@@ -2,25 +2,33 @@ import { Column, Entity, OneToMany } from 'typeorm';
 import { DefaultModel } from './DefaultModel';
 import { RolePermit } from './RolePermit';
 import { UserRole } from './UserRole';
+import { ApiProperty } from '@nestjs/swagger';
 
 @Entity()
 export class Role extends DefaultModel {
   @Column()
-  name: string;
+  @ApiProperty({
+    examples: ['ADMIN', 'DIRECTOR'],
+  })
+  name?: string;
 
   @Column({
     nullable: true,
   })
-  description: string;
+  @ApiProperty({
+    example: 'Full of permission',
+  })
+  description?: string;
 
   @Column({
     nullable: true,
   })
-  note: string;
+  @ApiProperty()
+  note?: string;
 
   @OneToMany(() => UserRole, (userRole) => userRole.role)
-  userRoles: UserRole[];
+  userRoles?: UserRole[];
 
   @OneToMany(() => RolePermit, (rolePermit) => rolePermit.role)
-  rolePermits: RolePermit[];
+  rolePermits?: RolePermit[];
 }

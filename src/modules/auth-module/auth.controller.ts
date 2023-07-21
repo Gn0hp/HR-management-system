@@ -6,12 +6,18 @@ import {
   HttpStatus,
   Post,
   Query,
+  Req,
+  UseGuards,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { AuthService } from './auth.service';
 import { User } from 'src/entities/User';
+import { GetUser, JwtAuthGuard } from '../../auth/jwt/jwt';
+import { JwtPayload } from '../../auth/jwt/jwtPayload';
+import { ApiTags } from '@nestjs/swagger';
 
 @Controller('auth')
+@ApiTags('auth')
 export class AuthController {
   constructor(
     private readonly service: AuthService,
@@ -46,6 +52,12 @@ export class AuthController {
     return JSON.stringify(
       this.service.registerNewUser(user) ? 'success' : 'fail',
     );
+  }
+  @Post('refresh-token')
+  @UseGuards(JwtAuthGuard)
+  refreshToken(@GetUser() user: JwtPayload, @Req() req: any) {
+    if (!user) return 'Invalid access token';
+    return this.service.refreshToken(user, req.get('Authorization-Refresh'));
   }
   @Get('/test-param')
   testParam(@Query() query: any) {

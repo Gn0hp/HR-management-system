@@ -2,23 +2,31 @@ import { Column, Entity, ManyToOne } from 'typeorm';
 import { DefaultModel } from './DefaultModel';
 import { Role } from './Role';
 import { Permission } from './Permission';
+import { ApiProperty } from '@nestjs/swagger';
 
 @Entity()
 export class RolePermit extends DefaultModel {
   @Column()
-  name: string;
+  @ApiProperty({
+    examples: ['Admin-R', 'Manger-RF', 'Director-W'],
+  })
+  name?: string;
 
   @Column({
     nullable: true,
   })
-  description: string;
+  @ApiProperty()
+  description?: string;
 
   @Column()
-  status: string;
+  @ApiProperty({
+    enum: ['ACTIVE', 'INACTIVE'],
+  })
+  status?: string;
 
   @ManyToOne(() => Role, (role) => role.rolePermits)
-  role: Role;
+  role?: Role;
 
   @ManyToOne(() => Permission, (permission) => permission.rolePermits)
-  permission: Permission;
+  permission?: Permission;
 }

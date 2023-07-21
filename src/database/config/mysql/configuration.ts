@@ -2,7 +2,7 @@ import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { Permission } from 'src/entities/Permission';
 import { Role } from 'src/entities/Role';
 import { User } from 'src/entities/User';
-import { yamlParser } from '../../../commons/yamlParser';
+import { yamlParser } from '../../../utils/yamlParser';
 import { UserRole } from 'src/entities/UserRole';
 import { RolePermit } from 'src/entities/RolePermit';
 import { Form } from 'src/entities/Form';

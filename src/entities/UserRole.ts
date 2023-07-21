@@ -1,29 +1,38 @@
 import { Column, Entity, ManyToOne } from 'typeorm';
 import { DefaultModel } from './DefaultModel';
 import { Role } from './Role';
+import { ApiProperty } from '@nestjs/swagger';
 
 @Entity()
 export class UserRole extends DefaultModel {
   @Column()
-  name: string;
+  @ApiProperty({
+    examples: ['admin 1', 'director 1'],
+  })
+  name?: string;
 
   @Column({
     nullable: true,
   })
-  description: string;
+  @ApiProperty()
+  description?: string;
 
   @Column()
-  status: string;
+  @ApiProperty({
+    enum: ['ACTIVE', 'INACTIVE'],
+  })
+  status?: string;
 
   @Column({
     nullable: true,
   })
-  note: string;
+  @ApiProperty()
+  note?: string;
 
   // @ManyToOne(() => User, (user) => user.userRoles)
   @Column()
-  userId: number;
+  userId?: number;
 
   @ManyToOne(() => Role, (role) => role.userRoles)
-  role: Role;
+  role?: Role;
 }

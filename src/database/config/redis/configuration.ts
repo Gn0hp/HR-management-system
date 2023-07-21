@@ -1,5 +1,5 @@
 import { RedisModuleOptions } from '@liaoliaots/nestjs-redis';
-import { yamlParser } from 'src/commons/yamlParser';
+import { yamlParser } from 'src/utils/yamlParser';
 export function redisParseConfig(): RedisModuleOptions {
   const YAML_CONFIG_FILENAME = 'config.yaml';
   const config = yamlParser(YAML_CONFIG_FILENAME);
