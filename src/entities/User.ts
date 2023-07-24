@@ -83,6 +83,7 @@ export class User extends DefaultModel {
   @Column()
   @ApiProperty({
     enum: ['ACTIVE', 'INACTIVE', 'DELETED'],
+    default: 'ACTIVE',
   })
   status?: string;
 

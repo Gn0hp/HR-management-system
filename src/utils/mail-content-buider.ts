@@ -1,6 +1,6 @@
 import { ISendMailOptions } from '@nestjs-modules/mailer';
 import { IMailContext } from '../commons/interfaces/IMailContext';
-import {join} from "path";
+import { join } from 'path';
 
 export function ParseMailContent(context: IMailContext, content: any) {
   return <ISendMailOptions>{
@@ -11,7 +11,7 @@ export function ParseMailContent(context: IMailContext, content: any) {
     text: content?.text || '',
     template: join(__dirname, '../modules/mail/templates/mail-template.hbs'),
     context: {
-      name: context?.name || '',
+      text: context?.text || '',
       type: context?.type || '',
       link: context?.link || '',
     },

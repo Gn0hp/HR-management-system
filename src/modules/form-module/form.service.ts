@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { UserService } from '../user-module/user-service';
 import { MailService } from '../mail/mail.service';
@@ -7,11 +7,12 @@ import { IBaseService } from '../../commons/interfaces/IBaseService';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Form } from '../../entities/Form';
 import { QueryParams } from '../../commons/query_params';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { Cron } from '@nestjs/schedule';
 
 @Injectable()
 export class FormService implements IBaseService {
+  private readonly logger = new Logger(`${FormService.name} Worker`);
   constructor(
     private readonly configService: ConfigService,
     private readonly userService: UserService,
@@ -26,23 +27,48 @@ export class FormService implements IBaseService {
   }
   async approve(formId: number) {}
 
-  delete(id: number) {}
+  async delete(id: number) {
+    return this.formRepository.delete(id);
+  }
 
-  findAll(options?: any) {}
+  findAll(options?: any) {
+    return this.formRepository.find(options);
+  }
 
-  findById(condition, options?: QueryParams) {}
+  findById(id: number) {
+    return this.formRepository.findOne({ where: { id } });
+  }
 
-  findByIds(condition: any, options?: QueryParams) {}
+  async findByIds(condition: any, options?: QueryParams) {
+    return await this.formRepository.find({
+      where: { id: In(condition) },
+      ...options,
+    });
+  }
 
-  findByOptions(condition: any, options?: QueryParams) {}
+  async findByOptions(condition: any, options?: QueryParams) {
+    return await this.formRepository.find({
+      where: condition,
+      ...options,
+    });
+  }
 
-  findOneByOptions(condition: any, options?: QueryParams) {}
+  async findOneByOptions(condition: any) {
+    return await this.formRepository.findOne(condition);
+  }
 
-  update(id: number, entity: any) {}
+  update(id: number, dto: FormDto) {
+    if (!dto.isValid()) {
+      throw new Error('Form is invalid');
+    }
+    return this.formRepository.update(id, dto.toEntity());
+  }
 
-  @Cron('30 * * * *')
+  @Cron('*/30 * * * * *')
   reportService() {
     // TODO: quét mỗi 30s dựa vào ngày hết hạn của form có ngày hết hạn gần nhất trong db để report list user chưa hoàn thành form
-    console.log('Every 30 seconds');
+    this.logger.log('Every 30 seconds');
   }
+  // @Cron('* * * * *')
+  // updateFormStatus() {}
 }

@@ -5,23 +5,29 @@ import { ApiProperty } from '@nestjs/swagger';
 
 @Entity()
 export class Form extends DefaultModel {
-  @Column()
+  @Column({
+    default: 'New form',
+  })
   @ApiProperty({
     example: 'Form danh gia dinh ky hang nam 2023 ...',
     description: 'name of form',
   })
   name?: string;
 
-  @Column()
+  @Column({
+    default: '1',
+  })
   @ApiProperty({
-    enum: [1, 2],
+    enum: ['1', '2'],
     description: `type of form
     1: form thu viec
     2: form danh gia dinh ky`,
   })
   type?: string;
 
-  @Column()
+  @Column({
+    default: '',
+  })
   @ApiProperty({
     description: 'link or path(if existed) to form. recommend link',
   })
@@ -59,6 +65,10 @@ export class Form extends DefaultModel {
   })
   @ApiProperty()
   description?: string;
+
+  @Column()
+  @ApiProperty({})
+  expiry_date?: Date;
   //   @ManyToOne(() => User, (user) => user.roles)
   //   user: User;
 

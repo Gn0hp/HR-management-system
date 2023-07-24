@@ -53,15 +53,14 @@ export class MailService {
   async send(emailContent: ISendMailOptions) {
     await this.setTransport();
     emailContent.transporterName = 'gmail';
-    await this.mailerService
+    return await this.mailerService
       .sendMail(emailContent)
       .then(() => {
         console.log('send mail success');
-        return true;
+        return emailContent;
       })
       .catch((err) => {
         console.log('send mail fail: ', err);
       });
-    return false;
   }
 }

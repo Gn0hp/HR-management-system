@@ -18,6 +18,7 @@ import {
 import { AuthInterceptor } from '../../commons/auth.interceptor';
 import { User } from '../../entities/User';
 import { ApiTags } from '@nestjs/swagger';
+import { parseQuery } from '../../commons/query_params';
 
 @Controller('user-controller')
 @ApiTags('user-controller')
@@ -39,6 +40,12 @@ export class UserControllerController {
   @UseGuards(JwtAuthGuard)
   findRolesByUserId(@GetUser() user, @Param('id') id: number) {
     return this.service.getAllPermissionByUserId(id);
+  }
+  @Get('get-by-options')
+  @UseGuards(JwtAuthGuard)
+  findByOptions(@GetUser() user, @Query() query) {
+    const filterUser = <User>parseQuery(query);
+    return this.service.findByOptions(filterUser);
   }
   @Delete('delete/:id')
   delete(@Param('id') id: number) {

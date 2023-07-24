@@ -22,7 +22,7 @@ export class AuthInterceptor implements NestInterceptor {
     const user = request.user;
     // TODO: check active
 
-    if (this.permission)
+    if (this.permission && this.permission.length > 0)
       if (!OnlyPermissionOrRole(user, this.permission)) {
         return throwError(
           () =>
@@ -31,7 +31,7 @@ export class AuthInterceptor implements NestInterceptor {
             ),
         );
       }
-    if (this.roles) {
+    if (this.roles && this.roles.length > 0) {
       if (!OnlyPermissionOrRole(user, this.roles)) {
         return throwError(
           () =>

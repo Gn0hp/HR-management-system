@@ -3,6 +3,7 @@ export interface IFormCreatePostBody {
   text?: string;
   link?: string;
   type?: string;
+  expireDate?: string;
   attachments?: IFormCreateAttachment[];
 }
 

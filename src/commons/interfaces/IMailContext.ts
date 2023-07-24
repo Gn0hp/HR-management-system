@@ -1,5 +1,5 @@
 export interface IMailContext {
-  name?: string;
+  text?: string;
   type?: string;
   link?: string;
 }

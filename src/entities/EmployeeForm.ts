@@ -21,6 +21,7 @@ export class EmployeeForm extends DefaultModel {
     SUBMITTED: form submitted by employee
     APPROVAL: form approved by manager
     CLOSED: form closed by admin`,
+    default: 'NEW',
   })
   status?: string;
 

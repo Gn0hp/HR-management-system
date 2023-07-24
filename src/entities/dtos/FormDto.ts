@@ -10,5 +10,7 @@ export class FormDto implements IBaseDTO {
     return true;
   }
 
-  toEntity(): any {}
+  toEntity(): any {
+    return this.form;
+  }
 }

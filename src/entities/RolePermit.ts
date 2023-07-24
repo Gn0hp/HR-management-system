@@ -21,6 +21,7 @@ export class RolePermit extends DefaultModel {
   @Column()
   @ApiProperty({
     enum: ['ACTIVE', 'INACTIVE'],
+    default: 'ACTIVE',
   })
   status?: string;
 

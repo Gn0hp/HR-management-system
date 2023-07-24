@@ -11,6 +11,10 @@
     take: 10,
     cache:true
 }*/
+import { applyDecorators } from '@nestjs/common';
+import { ApiQuery } from '@nestjs/swagger';
+import { Order } from './pagination/utils';
+
 export interface QueryParams {
   select?: any;
   order?: any;
@@ -18,6 +22,41 @@ export interface QueryParams {
   skip?: number;
   cache?: boolean;
 }
+export const CommonQueryParam = () => {
+  return applyDecorators(
+    ApiQuery({
+      name: 'select',
+      required: false,
+      type: 'string',
+      description: 'select a field of object that requesting',
+      example: 'select=id,name',
+    }),
+    ApiQuery({
+      name: 'sortBy',
+      required: false,
+      enum: Order,
+      example: 'sortBy=columnName1:ASC,columnName2:DESC',
+    }),
+    ApiQuery({
+      name: 'take',
+      required: false,
+      type: 'number',
+      example: 'take=10',
+    }),
+    ApiQuery({
+      name: 'skip',
+      required: false,
+      type: 'number',
+      example: 'skip=5',
+    }),
+    ApiQuery({
+      name: 'cache',
+      required: false,
+      type: 'boolean',
+      example: 'cache=true',
+    }),
+  );
+};
 // template url: http://<host>:<port>/get?
 // select=columnName1,columnName2
 // &sortBy=columnName1:ASC,columnName2:DESC
@@ -45,4 +84,22 @@ export function queryParamBuilder(query: Record<string, any>): QueryParams {
     skip: query?.skip || undefined,
     cache: query?.cache || undefined,
   };
+}
+
+export function parseQuery(query: Record<string, any>): any {
+  const filterInQuery = ['select', 'order', 'take', 'skip', 'cache'];
+  const result = {};
+  for (const key in query) {
+    if (
+      Object.prototype.hasOwnProperty.call(query, key) &&
+      filterInQuery.indexOf(key) === -1
+    ) {
+      try {
+        result[key] = query[key];
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  }
+  return result;
 }
