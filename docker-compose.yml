@@ -28,6 +28,7 @@ services:
   nestjs_app:
     build:
       context: .
+      dockerfile: api.dockerfile
     ports:
       - "3000:3000"
     depends_on:

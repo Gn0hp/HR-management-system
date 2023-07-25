@@ -1,6 +1,4 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
 import { MailService } from './mail.service';
-import { GetUser, JwtAuthGuard } from '../../auth/jwt/jwt';
 import { ApiTags } from '@nestjs/swagger';
 
 @Controller('mail')

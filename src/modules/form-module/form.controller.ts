@@ -4,7 +4,8 @@ import {
   Get,
   Param,
   Patch,
-  Post, Query,
+  Post,
+  Query,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
@@ -27,17 +28,16 @@ import { ApiTags } from '@nestjs/swagger';
 import { EmployeeFormService } from '../employee-form-module/employee-form-service';
 import { Form } from '../../entities/Form';
 import { FormDto } from '../../entities/dtos/FormDto';
-import { SentMessageInfo } from 'nodemailer';
 import { EmployeeForm } from '../../entities/EmployeeForm';
 import { EmployeeFormDto } from '../../entities/dtos/EmployeeFormDto';
 import {
   IEmployeeFormApproveBody,
   IEmployeeSubmitBody,
 } from '../../internal/RequestPostBody';
-import { IBaseService } from '../../commons/interfaces/IBaseService';
-import {parseQuery, queryParamBuilder} from "../../commons/query_params";
+import { parseQuery, queryParamBuilder } from '../../commons/query_params';
 
 @Controller('form')
+@UseGuards(JwtAuthGuard)
 @ApiTags('form')
 export class FormController {
   constructor(
@@ -49,7 +49,6 @@ export class FormController {
   ) {}
 
   @Post('create')
-  @UseGuards(JwtAuthGuard)
   @UseInterceptors(
     new AuthInterceptor([WRITE_FORM_PERMISSION, WRITE_PERMISSION]),
   )
@@ -109,7 +108,6 @@ export class FormController {
   }
 
   @Post('submit')
-  @UseGuards(JwtAuthGuard)
   // employee submit form
   async submit(@GetUser() payload, @Body() body: IEmployeeSubmitBody) {
     if (!body.formId) throw new Error('formId is required');
@@ -125,8 +123,7 @@ export class FormController {
   }
 
   @Post('approve')
-  @UseGuards(JwtAuthGuard)
-  @UseInterceptors(new AuthInterceptor([], ['MANAGER']))
+  @UseInterceptors(new AuthInterceptor(undefined, ['MANAGER']))
   // manager approve form
   async approve(@GetUser() payload, @Body() body: IEmployeeFormApproveBody) {
     if (!body.employeeFormId) throw new Error('employeeFormId is required');
@@ -142,8 +139,7 @@ export class FormController {
   }
 
   @Patch('close-submitted-form/:id')
-  @UseGuards(JwtAuthGuard)
-  @UseInterceptors(new AuthInterceptor([], ['HR']))
+  @UseInterceptors(new AuthInterceptor(undefined, ['HR']))
   // hr close submitted form
   async closeSubmittedForm(@Param('id') id: number) {
     const formDTO: FormDto = new FormDto(<Form>{ status: 'CLOSED' });

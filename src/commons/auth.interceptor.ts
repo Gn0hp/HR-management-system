@@ -12,7 +12,7 @@ import { PermissionDeniedException } from './Exceptions/PermissionDeniedExceptio
 export class AuthInterceptor implements NestInterceptor {
   constructor(
     private readonly permission?: string | string[],
-    private roles?: string | string[],
+    private readonly roles?: string | string[],
   ) {}
   intercept(
     context: ExecutionContext,
