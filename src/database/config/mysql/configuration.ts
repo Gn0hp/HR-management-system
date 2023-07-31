@@ -1,12 +1,13 @@
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
-import { Permission } from 'src/entities/Permission';
-import { Role } from 'src/entities/Role';
-import { User } from 'src/entities/User';
-import { yamlParser } from '../../../commons/yamlParser';
-import { UserRole } from 'src/entities/UserRole';
-import { RolePermit } from 'src/entities/RolePermit';
-import { Form } from 'src/entities/Form';
-import { EmployeeForm } from 'src/entities/EmployeeForm';
+import { Permission } from 'src/modules/permission-module/Permission';
+
+import { yamlParser } from '../../../utils/yamlParser';
+
+import { RolePermit } from 'src/modules/role-permit-module/RolePermit';
+import { Form } from 'src/modules/form-module/Form';
+import { EmployeeForm } from 'src/modules/employee-form-module/EmployeeForm';
+import { UserRole } from '../../../modules/user-module/UserRole';
+import { Role } from '../../../modules/role-module/Role';
 
 export function parseConfig(): TypeOrmModuleOptions {
   const YAML_CONFIG_FILENAME = 'config.yaml';

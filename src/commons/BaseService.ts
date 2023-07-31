@@ -1,7 +1,4 @@
-import { DeleteResult, Repository } from 'typeorm';
-import { EntityId } from 'typeorm/repository/EntityId';
 import { IBaseService } from './interfaces/IBaseService';
-import { InjectRepository } from '@nestjs/typeorm';
 
 export abstract class BaseService implements IBaseService {
   findAll() {
@@ -25,10 +22,7 @@ export abstract class BaseService implements IBaseService {
   update(id: any, entity: any) {
     throw new Error('Method not implemented.');
   }
-  updateInBatch(id: any, entities: any, batch: number) {
-    throw new Error('Method not implemented.');
-  }
-  delete(id: EntityId): Promise<DeleteResult> {
+  delete(id) {
     throw new Error('Method not implemented.');
   }
 }

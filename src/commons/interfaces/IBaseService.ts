@@ -1,27 +1,35 @@
 import { DeleteResult } from 'typeorm';
 import { EntityId } from 'typeorm/repository/EntityId';
+import {QueryParams} from "../query_params";
 export interface IBaseService {
-  findAll();
+  findAll(options?: any);
 
-  /*options: { id: 1, name: 'abc',..}*/
-  findById(options);
-  /* options: { status: Not('INACTIVE'), 
+  /*condition: { id: 1, name: 'abc',..}*/
+  findById(condition, options?: QueryParams);
+  /* condition: { status: Not('INACTIVE'),
                 amount: LessThan(10),  LessThanOrEqual, Morethan, Equal, Like('%abc%'),
                 id: IN([1,2,3]) Any
               }*/
-  findByIds(options);
+  /* options: {
+  * select: ['id', 'name'],
+  * sort: { id: 'ASC', name: 'DESC' },
+  * take: 10,
+  * skip: 10,
+  *
+  * }*/
+  findByIds(condition: any, options?: QueryParams);
 
-  findOneByOptions(options);
+  findOneByOptions(condition: any, options?: QueryParams);
 
-  findByOptions(options);
+  findByOptions(condition: any, options?: QueryParams);
 
-  save(entity);
+  save(entity: any);
 
   // saveInBatch(entities: T[], batch: number): Promise<T>;
 
-  update(id, entity);
+  update(id: number, entity: any);
 
-  updateInBatch(id, entities, batch: number);
+  // updateInBatch(id, entities, batch: number);
 
-  delete(id: EntityId): Promise<DeleteResult>;
+  delete(id: number);
 }

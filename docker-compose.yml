@@ -1,0 +1,40 @@
+version: "3.8"
+services:
+  redis:
+    container_name: "redis-hrm-app"
+    image: redis:6.2.6-alpine
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./redis:/data
+
+  mysql:
+    image: mysql:latest
+    container_name: "mysql-hrm-app"
+    networks:
+      - default
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DATABASE_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${DATABASE_NAME}
+      MYSQL_USER: ${DATABASE_USER}
+      MYSQL_PASSWORD: ${DATABASE_PASSWORD
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    command: --default-authentication-plugin=mysql_native_password
+  nestjs_app:
+    build:
+      context: .
+      dockerfile: api.dockerfile
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mysql
+      - redis
+networks:
+  default:
+volumes:
+  mysql_data:
