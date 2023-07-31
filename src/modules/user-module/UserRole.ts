@@ -1,6 +1,6 @@
 import { Column, Entity, ManyToOne } from 'typeorm';
-import { DefaultModel } from './DefaultModel';
-import { Role } from './Role';
+import { DefaultModel } from '../../entities/DefaultModel';
+import { Role } from '../role-module/Role';
 import { ApiProperty } from '@nestjs/swagger';
 
 @Entity()

@@ -49,9 +49,23 @@ Employee
 ```
 
 ## Installation
+```bash
+# For docker
+$ docker-compose build
+$ docker-compose up -d
+# Or watch from Makefile
+```
+```bash
+# Create environment and config files
+$ cp .env.example .env
+$ cp config.toml.example config.toml
+# Then edit both files follow your environment
+```
 
 ```bash
+# Install dependencies
 $ npm install
+$ yarn
 ```
 
 ## Running the app

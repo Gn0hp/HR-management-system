@@ -1,8 +1,13 @@
-export interface IEmployeeFormApproveBody {
+import { ApiProperty } from '@nestjs/swagger';
+
+export class IEmployeeFormApproveBody {
+  @ApiProperty()
   employeeFormId?: number;
 }
 
-export interface IEmployeeSubmitBody {
+export class IEmployeeSubmitBody {
+  @ApiProperty()
   formId?: number;
+  @ApiProperty()
   note?: string;
 }

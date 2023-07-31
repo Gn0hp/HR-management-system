@@ -5,10 +5,11 @@ import { MailService } from '../mail/mail.service';
 import { FormDto } from '../../entities/dtos/FormDto';
 import { IBaseService } from '../../commons/interfaces/IBaseService';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Form } from '../../entities/Form';
+import { Form } from './Form';
 import { QueryParams } from '../../commons/query_params';
 import { In, Repository } from 'typeorm';
 import { Cron } from '@nestjs/schedule';
+import { EMPLOYEE_FORM_STATUS_NEW } from '../../commons/globals/Constants';
 
 @Injectable()
 export class FormService implements IBaseService {
@@ -63,12 +64,20 @@ export class FormService implements IBaseService {
     }
     return this.formRepository.update(id, dto.toEntity());
   }
-
-  @Cron('*/30 * * * * *')
-  reportService() {
-    // TODO: quét mỗi 30s dựa vào ngày hết hạn của form có ngày hết hạn gần nhất trong db để report list user chưa hoàn thành form
-    this.logger.log('Every 30 seconds');
+  async validStatusForAction(form: number | Form) {
+    if (typeof form === 'number') {
+      return this.findById(form).then((res) => {
+        if (!res) throw new Error('form not found');
+        return res.status === EMPLOYEE_FORM_STATUS_NEW;
+      });
+    }
+    return form.status === EMPLOYEE_FORM_STATUS_NEW;
   }
+  // @Cron('*/30 * * * * *')
+  // reportService() {
+  //   // TODO: quét mỗi 30s dựa vào ngày hết hạn của form có ngày hết hạn gần nhất trong db để report list user chưa hoàn thành form
+  //   this.logger.log('Every 30 seconds');
+  // }
   // @Cron('* * * * *')
   // updateFormStatus() {}
 }

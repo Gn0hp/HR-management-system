@@ -6,7 +6,7 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import { JwtPayload } from 'src/auth/jwt/jwtPayload';
 import * as bcrypt from 'bcrypt';
-import { User } from 'src/entities/User';
+import { User } from 'src/modules/user-module/User';
 import { UserService } from '../user-module/user-service';
 import { ConfigService } from '@nestjs/config';
 
@@ -65,8 +65,7 @@ export class AuthService {
     const payload: JwtPayload = {
       userId: userFound?.id,
       username: userFound?.username,
-      roles,
-      permissions,
+      email: userFound?.email,
     };
     const tokens = await this.getTokens(payload);
     await this.updateRefreshToken(userFound.id, tokens.refreshToken);

@@ -1,5 +1,5 @@
 import { IBaseDTO } from './IBaseDTO';
-import { Form } from '../Form';
+import { Form } from '../../modules/form-module/Form';
 
 export class FormDto implements IBaseDTO {
   form: Form;

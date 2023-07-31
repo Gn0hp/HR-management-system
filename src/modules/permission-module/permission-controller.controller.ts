@@ -1,28 +1,50 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
+  Inject,
   Param,
   Patch,
   Post,
+  Put,
   Query,
-  UseGuards, UseInterceptors,
+  UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { PermissionService } from './permission-service';
-import {ApiOperation, ApiParam, ApiQuery, ApiTags} from '@nestjs/swagger';
-import {CommonQueryParam, parseQuery, queryParamBuilder} from '../../commons/query_params';
-import { Permission } from '../../entities/Permission';
+import { ApiOperation, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
+import {
+  CommonQueryParam,
+  parseQuery,
+  queryParamBuilder,
+} from '../../commons/query_params';
+import { Permission } from './Permission';
 import { PermissionDto } from '../../entities/dtos/PermissionDto';
 import { JwtAuthGuard } from '../../auth/jwt/jwt';
-import {AuthInterceptor} from "../../commons/auth.interceptor";
-import {DELETE_PERMISSION, UPDATE_PERMISSION, WRITE_PERMISSION} from "../../commons/globals/Constants";
+import { UserService } from '../user-module/user-service';
+import {
+  AuthInterceptor,
+  RequiredPermission,
+} from '../auth-module/auth.interceptor';
+import {
+  DELETE_PERMISSION,
+  READ_PERMISSION,
+  UPDATE_PERMISSION,
+  WRITE_PERMISSION,
+} from '../../commons/globals/Constants';
 
-@Controller('permission-controller')
+@Controller('permissions')
 @UseGuards(JwtAuthGuard)
-@ApiTags('permission-controller')
+@ApiTags('Permissions')
 export class PermissionControllerController {
-  constructor(private readonly service: PermissionService) {}
+  constructor(
+    private readonly service: PermissionService,
+    @Inject(UserService) private readonly userService: UserService,
+  ) {}
   @Get('get')
+  @UseInterceptors(AuthInterceptor)
+  @RequiredPermission(READ_PERMISSION)
   @CommonQueryParam()
   @ApiOperation({
     summary: 'Get all permission',
@@ -32,6 +54,8 @@ export class PermissionControllerController {
     return this.service.findAll(queryParamBuilder(query));
   }
   @Get('get-by-id/:id')
+  @UseInterceptors(AuthInterceptor)
+  @RequiredPermission(READ_PERMISSION)
   @ApiOperation({
     summary: 'Get permission by id',
     description: 'Get permission by id, Permission: not required',
@@ -45,6 +69,8 @@ export class PermissionControllerController {
     return this.service.findById(id);
   }
   @Get('get-by-ids')
+  @UseInterceptors(AuthInterceptor)
+  @RequiredPermission(READ_PERMISSION)
   @CommonQueryParam()
   @ApiOperation({
     summary: 'Get permission by ids',
@@ -62,6 +88,8 @@ export class PermissionControllerController {
     return this.service.findByIds(ids, queryParamBuilder(query));
   }
   @Get('get-by-options')
+  @UseInterceptors(AuthInterceptor)
+  @RequiredPermission(READ_PERMISSION)
   @CommonQueryParam()
   @ApiOperation({
     summary: 'Get permission by options',
@@ -76,6 +104,8 @@ export class PermissionControllerController {
     return this.service.findByOptions(asBody, queryParamBuilder(query));
   }
   @Get('get-one-by-options')
+  @UseInterceptors(AuthInterceptor)
+  @RequiredPermission(READ_PERMISSION)
   @ApiOperation({
     summary: 'Get permission by options',
     description: 'Get permission by options, Permission: not required',
@@ -89,7 +119,9 @@ export class PermissionControllerController {
     return this.service.findOneByOptions(asBody);
   }
   @Post('save')
-  @UseInterceptors(new AuthInterceptor(WRITE_PERMISSION))
+  @UseInterceptors(AuthInterceptor)
+  @RequiredPermission(WRITE_PERMISSION)
+  //@UseInterceptors(new AuthInterceptor(WRITE_PERMISSION))
   @ApiOperation({
     summary: 'Save permission',
     description: 'Save permission, Permission: WRITE_PERMISSION',
@@ -97,8 +129,10 @@ export class PermissionControllerController {
   save(@Body() body: Permission) {
     return this.service.save(new PermissionDto(body));
   }
-  @Patch('update/:id')
-  @UseInterceptors(new AuthInterceptor(UPDATE_PERMISSION))
+  @Put('update/:id')
+  @UseInterceptors(AuthInterceptor)
+  @RequiredPermission(UPDATE_PERMISSION)
+  //@UseInterceptors(new AuthInterceptor(UPDATE_PERMISSION))
   @ApiOperation({
     summary: 'Update permission',
     description: 'Update permission, Permission: UPDATE_PERMISSION',
@@ -111,8 +145,10 @@ export class PermissionControllerController {
   update(@Param('id') id, @Body() body: Permission) {
     return this.service.update(id, new PermissionDto(body));
   }
-  @Post('delete/:id')
-  @UseInterceptors(new AuthInterceptor(DELETE_PERMISSION))
+  @Delete('delete/:id')
+  @UseInterceptors(AuthInterceptor)
+  @RequiredPermission(DELETE_PERMISSION)
+  //@UseInterceptors(new AuthInterceptor(DELETE_PERMISSION))
   @ApiOperation({
     summary: 'Delete permission',
     description: 'Delete permission, Permission: DELETE_PERMISSION',

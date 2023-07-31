@@ -13,7 +13,7 @@
 }*/
 import { applyDecorators } from '@nestjs/common';
 import { ApiQuery } from '@nestjs/swagger';
-import { Order } from './pagination/utils';
+import { Order, PageOptionsDto } from './pagination/utils';
 
 export interface QueryParams {
   select?: any;
@@ -102,4 +102,15 @@ export function parseQuery(query: Record<string, any>): any {
     }
   }
   return result;
+}
+
+export function pageQueryParamBuilder(
+  query: Record<string, any>,
+): PageOptionsDto {
+  return <PageOptionsDto>{
+    order: query?.order || undefined,
+    page: query?.page || undefined,
+    take: query?.take || undefined,
+    skip: query?.skip || undefined,
+  };
 }

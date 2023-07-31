@@ -1,5 +1,5 @@
 import { IBaseDTO } from './IBaseDTO';
-import { EmployeeForm } from '../EmployeeForm';
+import { EmployeeForm } from '../../modules/employee-form-module/EmployeeForm';
 
 export class EmployeeFormDto implements IBaseDTO {
   employeeForm: EmployeeForm;

@@ -1,8 +1,9 @@
 import { MailService } from './mail.service';
 import { ApiTags } from '@nestjs/swagger';
+import { Controller } from '@nestjs/common';
 
-@Controller('mail')
-@ApiTags('mail')
+@Controller('mails')
+@ApiTags('Mails')
 export class MailController {
   constructor(private service: MailService) {}
   // @Post('test-send-mail')

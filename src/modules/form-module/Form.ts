@@ -1,6 +1,6 @@
 import { Column, Entity, OneToMany } from 'typeorm';
-import { DefaultModel } from './DefaultModel';
-import { EmployeeForm } from './EmployeeForm';
+import { DefaultModel } from '../../entities/DefaultModel';
+import { EmployeeForm } from '../employee-form-module/EmployeeForm';
 import { ApiProperty } from '@nestjs/swagger';
 
 @Entity()

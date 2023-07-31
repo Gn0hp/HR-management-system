@@ -10,13 +10,15 @@ import { createParamDecorator } from '@nestjs/common';
 //   }
 //   return false;
 // };
-
-export function OnlyPermissionOrRole(user, accessLimit) {
-  if (!user || !accessLimit || !user.permissions) return false;
-  accessLimit.forEach((limit) => {
-    if (!user.permissions.includes(limit)) {
-      return false;
-    }
-  });
+export enum ModiferType {
+  PERMISSIONS = 'permissions',
+  ROLES = 'roles',
+}
+export function OnlyPermissionOrRole(user, accessLimit, type: ModiferType) {
+  if (typeof accessLimit === 'string') accessLimit = [accessLimit];
+  if (!user || !accessLimit || !user[type]) return false;
+  for (const limit of accessLimit) {
+    if (!user[type].includes(limit)) return false;
+  }
   return true;
 }

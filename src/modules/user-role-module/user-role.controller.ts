@@ -1,10 +1,11 @@
 import {
   Body,
-  Controller,
+  Controller, Delete,
   Get,
+  Inject,
   Param,
   Patch,
-  Post,
+  Post, Put,
   Query,
   UseGuards,
   UseInterceptors,
@@ -16,27 +17,30 @@ import {
   queryParamBuilder,
   QueryParams,
 } from '../../commons/query_params';
-import { UserRole } from '../../entities/UserRole';
+import { UserRole } from '../user-module/UserRole';
 import { ApiOperation, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { UserRoleDto } from '../../entities/dtos/UserRoleDto';
 import { JwtAuthGuard } from '../../auth/jwt/jwt';
-import { AuthInterceptor } from '../../commons/auth.interceptor';
+import {AuthInterceptor, RequiredPermission} from '../auth-module/auth.interceptor';
 import {
-  DELETE_PERMISSION,
+  DELETE_PERMISSION, READ_PERMISSION,
   UPDATE_PERMISSION,
   WRITE_PERMISSION,
 } from '../../commons/globals/Constants';
+import { UserService } from '../user-module/user-service';
 
 // just need authentication, not required any roles or permissions (for get request only)
-@Controller('user-role')
+@Controller('user-roles')
 @UseGuards(JwtAuthGuard)
-@ApiTags('user-role')
+@ApiTags('User Roles')
 export class UserRoleController {
   constructor(private readonly service: UserRoleService) {}
 
   // http://localhost:3000/user-role/get
   @Get('get')
   @CommonQueryParam()
+  @UseInterceptors(AuthInterceptor)
+  @RequiredPermission(READ_PERMISSION)
   @ApiOperation({
     summary: 'Get all user-role',
     description: 'Get all user-role, Permission: not required',
@@ -47,6 +51,8 @@ export class UserRoleController {
   }
   // http://localhost:3000/user-role/get-by-user-id/1
   @Get('get-by-id/:id')
+  @UseInterceptors(AuthInterceptor)
+  @RequiredPermission(READ_PERMISSION)
   @ApiOperation({
     summary: 'Get user-role by id',
     description: 'Get user-role by id, Permission: not required',
@@ -61,6 +67,9 @@ export class UserRoleController {
   }
   // http://localhost:3000/user-role/get-by-ids
   @Get('get-by-ids')
+  @UseInterceptors(AuthInterceptor)
+  @RequiredPermission(READ_PERMISSION)
+  @CommonQueryParam()
   @ApiOperation({
     summary: 'Get user-role by ids',
     description: 'Get user-role by ids, Permission: not required',
@@ -71,7 +80,6 @@ export class UserRoleController {
     description: 'user-role ids',
     example: 'ids=1,3,5',
   })
-  @CommonQueryParam()
   findByIds(@Query() query) {
     if (!query.ids) throw new Error('ids is required');
     const ids = query.ids.split(',');
@@ -80,6 +88,8 @@ export class UserRoleController {
 
   // http://localhost:3000/user-role/get-by-options?name=abc&status=1
   @Get('get-by-options')
+  @UseInterceptors(AuthInterceptor)
+  @RequiredPermission(READ_PERMISSION)
   @ApiOperation({
     summary: 'Get user-role by options',
     description:
@@ -95,6 +105,8 @@ export class UserRoleController {
     return this.service.findByOptions(asBody, queryParamBuilder(query));
   }
   @Get('get-one-by-options')
+  @UseInterceptors(AuthInterceptor)
+  @RequiredPermission(READ_PERMISSION)
   @ApiOperation({
     summary: 'Get one user-role by options',
     description: 'Get one user-role by options, Permission: not required',
@@ -109,7 +121,9 @@ export class UserRoleController {
   }
 
   @Post('save')
-  @UseInterceptors(new AuthInterceptor(WRITE_PERMISSION))
+  @UseInterceptors(AuthInterceptor)
+  @RequiredPermission(WRITE_PERMISSION)
+  //@UseInterceptors(new AuthInterceptor(WRITE_PERMISSION, undefined))
   @ApiOperation({
     summary: 'Save user-role',
     description: 'Save user-role, Require permission: W',
@@ -117,7 +131,9 @@ export class UserRoleController {
   save(@Body() body: UserRole) {
     return this.service.save(new UserRoleDto(body));
   }
-  @Patch('update/:id')
+  @Put('update/:id')
+  @UseInterceptors(AuthInterceptor)
+  @RequiredPermission(UPDATE_PERMISSION)
   @ApiOperation({
     summary: 'Update user-role',
     description: 'Update user-role, Require permission: U',
@@ -127,16 +143,18 @@ export class UserRoleController {
     type: Number,
     description: 'user-role id',
   })
-  @UseInterceptors(new AuthInterceptor(UPDATE_PERMISSION))
+  //@UseInterceptors(new AuthInterceptor(UPDATE_PERMISSION))
   update(@Param('id') id, @Body() body: UserRole) {
     return this.service.update(id, new UserRoleDto(body));
   }
-  @Post('delete/:id')
+  @Delete('delete/:id')
+  @UseInterceptors(AuthInterceptor)
+  @RequiredPermission(DELETE_PERMISSION)
   @ApiOperation({
     summary: 'Delete user-role',
     description: 'Delete user-role, Require permission: D',
   })
-  @UseInterceptors(new AuthInterceptor(DELETE_PERMISSION))
+  //@UseInterceptors(new AuthInterceptor(DELETE_PERMISSION))
   delete(@Param('id') id) {
     return this.service.delete(id);
   }

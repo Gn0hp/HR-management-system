@@ -1,10 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Role } from 'src/entities/Role';
+
 import { FindManyOptions, FindOneOptions, In, Repository } from 'typeorm';
 import { IBaseService } from '../../commons/interfaces/IBaseService';
 import { QueryParams } from '../../commons/query_params';
 import { RoleDto } from '../../entities/dtos/RoleDto';
+import { Role } from './Role';
 
 @Injectable()
 export class RoleService implements IBaseService {

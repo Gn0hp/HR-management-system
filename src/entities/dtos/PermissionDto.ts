@@ -1,5 +1,5 @@
 import { IBaseDTO } from './IBaseDTO';
-import { Permission } from '../Permission';
+import { Permission } from '../../modules/permission-module/Permission';
 
 export class PermissionDto implements IBaseDTO {
   permission: Permission;

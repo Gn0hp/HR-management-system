@@ -7,15 +7,17 @@ import * as express from 'express';
 async function bootstrap() {
   const server = express();
   const app = await NestFactory.create(AppModule);
+  app.enableCors();
+  app.setGlobalPrefix('api/v1');
 
   const swaggerConfig = new DocumentBuilder()
     .setTitle('HR Management System')
-    .setDescription('HR Management System API')
+    .setDescription('Developed and maintained by Gn0hp')
     .setVersion('1.0')
-    .addTag('HR Management System')
+    .addTag('HR Management System Apis')
     .build();
   const swaggerDocument = SwaggerModule.createDocument(app, swaggerConfig);
-  SwaggerModule.setup('api', app, swaggerDocument);
+  SwaggerModule.setup('docs', app, swaggerDocument);
 
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
   app.useGlobalFilters(new DefaultException());

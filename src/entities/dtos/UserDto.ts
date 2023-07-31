@@ -1,4 +1,4 @@
-import { User } from '../User';
+import { User } from '../../modules/user-module/User';
 import { IBaseDTO } from './IBaseDTO';
 
 export class UserDto implements IBaseDTO {

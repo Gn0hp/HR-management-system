@@ -3,13 +3,16 @@ app:
   name: 'hr_management_system'
   version: '1.0.0'
 jwt:
-  lifecycle: 600
-  secret: '<Your jwt token secret. Note to keep this secret>'
+  lifecycle: 1800 # 30 minutes
+  secret: ''
+  refresh_token_size: 48
+  refresh_token_secret: ''
+  refresh_token_lifecycle: 604800 # 1 week
 database:
   mysql: 
-    name: 'hr_management_system'
-    user: '<your username>'
-    password: '<your password>'
+    name: ''
+    user: ''
+    password: ''
     host: 'localhost'
     port: 3306
   redis:

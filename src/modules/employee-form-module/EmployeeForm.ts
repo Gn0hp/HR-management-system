@@ -1,6 +1,6 @@
 import { Column, Entity, ManyToOne } from 'typeorm';
-import { DefaultModel } from './DefaultModel';
-import { Form } from './Form';
+import { DefaultModel } from '../../entities/DefaultModel';
+import { Form } from '../form-module/Form';
 import { ApiProperty } from '@nestjs/swagger';
 
 @Entity()
@@ -15,7 +15,7 @@ export class EmployeeForm extends DefaultModel {
 
   @Column()
   @ApiProperty({
-    enum: ['NEW', 'SUBMITTED', 'APPROVAL', 'CLOSED'],
+    enum: ['NEW', 'SUBMITTED', 'APPROVED', 'REJECTED', 'CLOSED'],
     description: `status of each form corresponding to each employee
     NEW: new form created
     SUBMITTED: form submitted by employee

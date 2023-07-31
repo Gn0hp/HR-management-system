@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { RolePermit } from 'src/entities/RolePermit';
+import { RolePermit } from 'src/modules/role-permit-module/RolePermit';
 import { In, Repository } from 'typeorm';
 import { IBaseService } from '../../commons/interfaces/IBaseService';
 import { QueryParams } from '../../commons/query_params';

@@ -1,5 +1,5 @@
 import { IBaseDTO } from './IBaseDTO';
-import { RolePermit } from '../RolePermit';
+import { RolePermit } from '../../modules/role-permit-module/RolePermit';
 
 export class RolePermitDto implements IBaseDTO {
   rolePermit: RolePermit;

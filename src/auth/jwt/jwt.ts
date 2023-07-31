@@ -1,17 +1,11 @@
 import {
-  CanActivate,
   createParamDecorator,
   ExecutionContext,
   Injectable,
-  UnauthorizedException,
 } from '@nestjs/common';
-import { yamlParser } from 'src/utils/yamlParser';
-import { JwtService } from '@nestjs/jwt';
-import { Request } from 'express';
-import { ConfigService } from '@nestjs/config';
 import * as randToken from 'rand-token';
 import { AuthGuard } from '@nestjs/passport';
-import { Observable } from 'rxjs';
+import {yamlParser} from "../../utils/yamlParser";
 
 @Injectable()
 export class JwtAuthGuard extends AuthGuard('jwt') {}

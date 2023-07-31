@@ -1,37 +1,49 @@
 import {
   Body,
-  Controller,
+  Controller, Delete,
   Get,
   Param,
   Patch,
   Post,
+  Put,
   Query,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { RoleService } from './role-service';
-import {ApiOperation, ApiParam, ApiQuery, ApiTags} from '@nestjs/swagger';
+import {
+  ApiBody,
+  ApiOperation,
+  ApiParam,
+  ApiQuery,
+  ApiTags,
+} from '@nestjs/swagger';
 import {
   CommonQueryParam,
   parseQuery,
   queryParamBuilder,
 } from '../../commons/query_params';
-import { Role } from '../../entities/Role';
+import { Role } from './Role';
 import { RoleDto } from '../../entities/dtos/RoleDto';
 import { JwtAuthGuard } from '../../auth/jwt/jwt';
-import { AuthInterceptor } from '../../commons/auth.interceptor';
+import {
+  AuthInterceptor,
+  RequiredPermission,
+} from '../auth-module/auth.interceptor';
 import {
   DELETE_PERMISSION,
-  UPDATE_PERMISSION,
+  READ_PERMISSION,
   WRITE_PERMISSION,
 } from '../../commons/globals/Constants';
 
-@Controller('role-controller')
+@Controller('roles')
 @UseGuards(JwtAuthGuard)
-@ApiTags('role-controller')
+@ApiTags('Roles')
 export class RoleControllerController {
   constructor(private readonly roleService: RoleService) {}
   @Get('get')
+  @UseInterceptors(AuthInterceptor)
+  @RequiredPermission(READ_PERMISSION)
   @CommonQueryParam()
   @ApiOperation({
     summary: 'Get all role',
@@ -42,6 +54,8 @@ export class RoleControllerController {
     return this.roleService.findAll(options);
   }
   @Get('get-by-id/:id')
+  @UseInterceptors(AuthInterceptor)
+  @RequiredPermission(READ_PERMISSION)
   @ApiOperation({
     summary: 'Get role by id',
     description: 'Get role by id, Permission: not required',
@@ -55,6 +69,8 @@ export class RoleControllerController {
     return this.roleService.findById(id);
   }
   @Get('get-by-ids')
+  @UseInterceptors(AuthInterceptor)
+  @RequiredPermission(READ_PERMISSION)
   @CommonQueryParam()
   @ApiOperation({
     summary: 'Get role by ids',
@@ -72,6 +88,8 @@ export class RoleControllerController {
     return this.roleService.findByIds(ids, queryParamBuilder(query));
   }
   @Get('get-by-options')
+  @UseInterceptors(AuthInterceptor)
+  @RequiredPermission(READ_PERMISSION)
   @CommonQueryParam()
   @ApiOperation({
     summary: 'Get role by options',
@@ -86,6 +104,8 @@ export class RoleControllerController {
     return this.roleService.findByOptions(asBody, queryParamBuilder(query));
   }
   @Get('get-one-by-options')
+  @UseInterceptors(AuthInterceptor)
+  @RequiredPermission(READ_PERMISSION)
   @ApiOperation({
     summary: 'Get one role by options',
     description: 'Get one role by options, Permission: not required',
@@ -99,16 +119,20 @@ export class RoleControllerController {
     return this.roleService.findOneByOptions(asBody);
   }
   @Post('save')
-  @UseInterceptors(new AuthInterceptor(WRITE_PERMISSION))
+  @UseInterceptors(AuthInterceptor)
+  @RequiredPermission(WRITE_PERMISSION)
   @ApiOperation({
     summary: 'Save role',
     description: 'Save role, Permission WRITE_ROLE',
   })
+  @ApiBody({
+    type: Role,
+  })
   save(@Body() body: Role) {
     return this.roleService.save(new RoleDto(body));
   }
-  @Patch('update/:id')
-  @UseInterceptors(new AuthInterceptor(UPDATE_PERMISSION))
+  @Put('update/:id')
+  //@UseInterceptors(new AuthInterceptor(UPDATE_PERMISSION))
   @ApiOperation({
     summary: 'Update role',
     description: 'Update role, Permission UPDATE_ROLE',
@@ -118,11 +142,16 @@ export class RoleControllerController {
     type: Number,
     description: 'role id',
   })
+  @ApiBody({
+    type: Role,
+  })
   update(@Param('id') id, @Body() body: Role) {
     return this.roleService.update(id, new RoleDto(body));
   }
-  @Post('delete/:id')
-  @UseInterceptors(new AuthInterceptor(DELETE_PERMISSION))
+  @Delete('delete/:id')
+  @UseInterceptors(AuthInterceptor)
+  @RequiredPermission(DELETE_PERMISSION)
+  //@UseInterceptors(new AuthInterceptor(DELETE_PERMISSION))
   @ApiOperation({
     summary: 'Delete role',
     description: 'Delete role, Permission DELETE_ROLE',

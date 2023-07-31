@@ -1,13 +1,13 @@
-import { InjectRedis } from '@liaoliaots/nestjs-redis';
-import { Injectable } from '@nestjs/common';
-import { Redis } from 'ioredis';
-import { User } from 'src/entities/User';
-import { UserRoleService } from '../user-role-module/user-role-service';
-import { UserRole } from 'src/entities/UserRole';
-import { InjectDataSource } from '@nestjs/typeorm';
-import { DataSource } from 'typeorm';
-import { IBaseService } from '../../commons/interfaces/IBaseService';
-import { UserDto } from '../../entities/dtos/UserDto';
+import {InjectRedis} from '@liaoliaots/nestjs-redis';
+import {Injectable} from '@nestjs/common';
+import {Redis} from 'ioredis';
+import {User} from 'src/modules/user-module/User';
+import {UserRoleService} from '../user-role-module/user-role-service';
+import {UserRole} from 'src/modules/user-module/UserRole';
+import {InjectDataSource} from '@nestjs/typeorm';
+import {DataSource} from 'typeorm';
+import {IBaseService} from '../../commons/interfaces/IBaseService';
+import {UserDto} from '../../entities/dtos/UserDto';
 
 @Injectable()
 export class UserService implements IBaseService {
@@ -20,8 +20,8 @@ export class UserService implements IBaseService {
   ) {}
 
   async getNextUserId(): Promise<number> {
-    return await this.redis.incr(this.USER_ID_KEY);
-    // TODO: save the latest id to main database cause of redis could be reset
+    // save the latest id to main database cause of redis could be reset
+    return this.redis.incr(this.USER_ID_KEY);
   }
 
   async save(user: Partial<User>): Promise<void> {
@@ -41,6 +41,10 @@ export class UserService implements IBaseService {
     });
     return res;
   }
+  async findAllId() {
+    const users = await this.findAll();
+    return users.map((user) => user.id);
+  }
   async findById(id: number): Promise<User> {
     const user = await this.redis.get(`user:${id}`);
     return JSON.parse(user);
@@ -58,10 +62,12 @@ export class UserService implements IBaseService {
     });
     return res;
   }
-  findByIds(condition, options?: any) {
-    throw new Error('Method not implemented.');
+  async findByIds(condition, options?: any) {
+    const users = await this.findAll();
+    return users.filter((user) => {
+      return condition.includes(user.id);
+    });
   }
-
   findOneByOptions(condition, options?: any) {
     throw new Error('Method not implemented.');
   }
@@ -94,7 +100,7 @@ export class UserService implements IBaseService {
         return null;
       });
   }
-  async getAllPermissionByUserId(user_id: number) {
+  public async getAllPermissionByUserId(user_id: number) {
     return this.connection
       .query(`select p.name from hr_management_system.permission p 
             \tright join hr_management_system.role_permit rp on rp.permissionId = p.id
@@ -102,7 +108,7 @@ export class UserService implements IBaseService {
             join hr_management_system.user_role ur on ur.roleId = r.id
             where ur.id in (${user_id});`);
   }
-  async getRolesByUserId(user_id: number) {
+  public async getRolesByUserId(user_id: number) {
     return this.connection.query(`select r.name from hr_management_system.role r
             join hr_management_system.user_role ur on ur.roleId = r.id
             where ur.id in (${user_id});`);

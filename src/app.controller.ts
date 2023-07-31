@@ -15,4 +15,15 @@ export class AppController {
   getHello(): string {
     return this.appService.getHello();
   }
+
+  @Get('health-check')
+  @ApiOperation({
+    summary: 'Health check',
+  })
+  healthCheck(): string {
+    return JSON.stringify({
+      status: 'OK',
+      time: new Date().toISOString(),
+    });
+  }
 }
