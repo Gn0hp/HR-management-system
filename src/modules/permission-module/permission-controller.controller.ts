@@ -33,9 +33,11 @@ import {
   UPDATE_PERMISSION,
   WRITE_PERMISSION,
 } from '../../commons/globals/Constants';
+import { ResponseInterceptor } from '../../commons/CommonResponse';
 
 @Controller('permissions')
 @UseGuards(JwtAuthGuard)
+@UseInterceptors(ResponseInterceptor)
 @ApiTags('Permissions')
 export class PermissionControllerController {
   constructor(

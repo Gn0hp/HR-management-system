@@ -4,7 +4,6 @@ import {
   Delete,
   Get,
   Param,
-  Patch,
   Post,
   Put,
   Query,
@@ -31,7 +30,8 @@ import {
   EMPLOYEE_FORM_STATUS_CLOSED,
   EMPLOYEE_FORM_STATUS_NEW,
   EMPLOYEE_FORM_STATUS_REJECTED,
-  EMPLOYEE_FORM_STATUS_SUBMITTED, FORM_STATUS_CLOSED,
+  EMPLOYEE_FORM_STATUS_SUBMITTED,
+  FORM_STATUS_CLOSED,
   READ_FORM_PERMISSION,
   UPDATE_FORM_PERMISSION,
   WRITE_FORM_PERMISSION,
@@ -52,10 +52,12 @@ import {
   parseQuery,
   queryParamBuilder,
 } from '../../commons/query_params';
-import { commonResponse } from '../../commons/CommonResponse';
+import { ResponseInterceptor } from '../../commons/CommonResponse';
+import { JwtPayload } from '../../auth/jwt/jwtPayload';
 
 @Controller('forms')
 @UseGuards(JwtAuthGuard)
+@UseInterceptors(ResponseInterceptor)
 @ApiTags('Forms')
 export class FormController {
   constructor(
@@ -77,8 +79,7 @@ export class FormController {
     type: IFormCreatePostBody,
   })
   // status form = NEW, is_notified = false
-  async create(@GetUser() user, @Body() body: IFormCreatePostBody) {
-    //TODO: handle validating and saving to db
+  async create(@GetUser() user: JwtPayload, @Body() body: IFormCreatePostBody) {
     const form: Form = {
       name: body?.subject,
       content: body?.text,
@@ -96,7 +97,10 @@ export class FormController {
     //     console.log('error while getting users email', err);
     //     throw err;
     //   });
-    const userMails = convertToNodeArray(['gn0hp289@gmail.com']);
+    const userMails = convertToNodeArray([
+      'gn0hp289@gmail.com',
+      'userd2891@gmail.com',
+    ]);
     // const userDB = await this.userService.findById(user?.id);
     const attachment = body.attachments
       ? convertToNodeArray(body.attachments)
@@ -118,6 +122,7 @@ export class FormController {
     const resSendMail = await this.mailService.send(emailContent);
     console.log(resSendMail);
     form.is_notified = true;
+    form.created_by = user.userId;
     await this.service
       .save(new FormDto(form))
       .then((res) => {
@@ -138,7 +143,10 @@ export class FormController {
     type: IEmployeeSubmitBody,
   })
   // employee submit form
-  async submit(@GetUser() payload, @Body() body: IEmployeeSubmitBody) {
+  async submit(
+    @GetUser() payload: JwtPayload,
+    @Body() body: IEmployeeSubmitBody,
+  ) {
     if (!body.formId) throw new Error('formId is required');
     const formDb = await this.service.findById(body.formId);
     if (!formDb) throw new Error('form not found');
@@ -175,7 +183,10 @@ export class FormController {
   })
   //@UseInterceptors(new AuthInterceptor(undefined, ['MANAGER']))
   // manager approve form
-  async approve(@GetUser() payload, @Body() body: IEmployeeFormApproveBody) {
+  async approve(
+    @GetUser() payload: JwtPayload,
+    @Body() body: IEmployeeFormApproveBody,
+  ) {
     if (!body.employeeFormId) throw new Error('employeeFormId is required');
     const employeeForm = await this.employeeService.findById(
       body.employeeFormId,
@@ -202,7 +213,7 @@ export class FormController {
     type: IEmployeeFormApproveBody,
   })
   async rejectSubmittedForm(
-    @GetUser() payload,
+    @GetUser() payload: JwtPayload,
     @Body() body: IEmployeeFormApproveBody,
   ) {
     if (!body.employeeFormId) throw new Error('employeeFormId is required');
@@ -235,10 +246,16 @@ export class FormController {
   })
   //@UseInterceptors(new AuthInterceptor(undefined, ['HR']))
   // hr close submitted form
-  async closeApprovedForm(@GetUser() payload, @Param('id') id: number) {
+  async closeApprovedForm(
+    @GetUser() payload: JwtPayload,
+    @Param('id') id: number,
+    @Body() body: IEmployeeFormApproveBody,
+  ) {
     if (!(await this.service.validStatusForAction(id)))
       throw new Error('This form is not available for any action');
-    const employeeForm = await this.employeeService.findById(id);
+    const employeeForm = await this.employeeService.findById(
+      body.employeeFormId,
+    );
     if (!employeeForm) throw new Error('employeeForm not found');
     if (
       ![EMPLOYEE_FORM_STATUS_APPROVED, EMPLOYEE_FORM_STATUS_REJECTED].includes(
@@ -249,9 +266,9 @@ export class FormController {
     }
     const formDTO: EmployeeFormDto = new EmployeeFormDto(<EmployeeForm>{
       status: EMPLOYEE_FORM_STATUS_CLOSED,
-      note: `Closed by ${payload.username} at ${new Date()}`
+      note: `Closed by ${payload.username} at ${new Date()}`,
     });
-    return this.employeeService.update(id, formDTO);
+    return this.employeeService.update(body.employeeFormId, formDTO);
   }
 
   @Post('close-form/:id')
@@ -268,7 +285,7 @@ export class FormController {
   })
   //@UseInterceptors(new AuthInterceptor(undefined, ['HR']))
   // hr close submitted form
-  async closeForm(@GetUser() payload, @Param('id') id: number) {
+  async closeForm(@GetUser() payload: JwtPayload, @Param('id') id: number) {
     if (!(await this.service.validStatusForAction(id)))
       throw new Error('This form is not available for any action');
     const formDTO: FormDto = new FormDto(<Form>{
@@ -281,6 +298,7 @@ export class FormController {
   @Get('get')
   @CommonQueryParam()
   @UseInterceptors(AuthInterceptor)
+  @UseInterceptors(ResponseInterceptor)
   @RequiredPermission(READ_FORM_PERMISSION)
   @ApiOperation({
     summary: 'Get all form',
@@ -357,7 +375,7 @@ export class FormController {
     name: 'id',
     type: Number,
   })
-  delete(@Param('id') id) {
+  delete(@Param('id') id: number) {
     return this.service.delete(id);
   }
 
@@ -375,13 +393,14 @@ export class FormController {
   @ApiBody({
     type: Form,
   })
-  update(@Param('id') id, @Body() body: Form) {
+  update(@Param('id') id: number, @Body() body: Form) {
     return this.service.update(id, new FormDto(body));
   }
 
   @Get('get-stat-complete-form/:id')
   @UseInterceptors(AuthInterceptor)
   @RequiredPermission(READ_FORM_PERMISSION)
+  @UseInterceptors(ResponseInterceptor)
   @ApiOperation({
     summary: 'Get stat complete form',
     description: 'Get stat complete form, Permission: READ_FORM_PERMISSION',
@@ -390,9 +409,9 @@ export class FormController {
     name: 'id',
     type: Number,
   })
-  async getStatCompleteForm(@Param('id') id) {
+  async getStatCompleteForm(@Param('id') id: number) {
     const userIds =
       await this.employeeService.getAllUserNotCompleteFormByFormId(id);
-    return commonResponse(this.userService.findByIds(userIds));
+    return this.userService.findByIds(userIds);
   }
 }

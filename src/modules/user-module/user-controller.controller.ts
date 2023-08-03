@@ -11,7 +11,6 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { UserService } from './user-service';
-import { GetUser, JwtAuthGuard } from 'src/auth/jwt/jwt';
 import {
   DELETE_PERMISSION,
   READ_PERMISSION,
@@ -22,12 +21,15 @@ import {
   RequiredPermission,
 } from '../auth-module/auth.interceptor';
 import { User } from './User';
-import {ApiBody, ApiOperation, ApiParam, ApiTags} from '@nestjs/swagger';
+import { ApiBody, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
 import { parseQuery } from '../../commons/query_params';
-import {commonResponse} from "../../commons/CommonResponse";
+import { ResponseInterceptor } from '../../commons/CommonResponse';
+import { JwtPayload } from '../../auth/jwt/jwtPayload';
+import {GetUser, JwtAuthGuard} from "../../auth/jwt/jwt";
 
 @Controller('users')
 @UseGuards(JwtAuthGuard)
+@UseInterceptors(ResponseInterceptor)
 @ApiTags('Users')
 export class UserControllerController {
   constructor(private readonly userService: UserService) {}
@@ -46,15 +48,15 @@ export class UserControllerController {
     description: 'user id',
   })
   findById(@Param('id') id: number) {
-    return commonResponse(this.userService.findById(id));
+    return this.userService.findById(id);
   }
   @Get('self-info')
   @ApiOperation({
     summary: 'Get self info',
     description: 'Get self info, Permission: just need authenticate.',
   })
-  selfInfo(@GetUser() payload) {
-    return commonResponse(this.userService.findById(payload.userId));
+  selfInfo(@GetUser() payload: JwtPayload) {
+    return this.userService.findById(payload.userId);
   }
   @Get('get')
   @UseInterceptors(AuthInterceptor)
@@ -65,7 +67,7 @@ export class UserControllerController {
     description: 'Get all user, Permission: READ_USER.',
   })
   findAll() {
-    return commonResponse(this.userService.findAll());
+    return this.userService.findAll();
   }
   @Get('get-roles/:id')
   @UseInterceptors(AuthInterceptor)
@@ -79,7 +81,7 @@ export class UserControllerController {
     type: Number,
     description: 'user id',
   })
-  findRolesByUserId(@GetUser() user, @Param('id') id: number) {
+  findRolesByUserId(@Param('id') id: number) {
     return this.userService.getAllPermissionByUserId(id);
   }
   @Get('get-by-options')
@@ -94,7 +96,7 @@ export class UserControllerController {
     description: 'properties of user entity',
     example: 'id=1&name=abc&...',
   })
-  findByOptions(@GetUser() user, @Query() query) {
+  findByOptions(@Query() query: any) {
     const filterUser = <User>parseQuery(query);
     return this.userService.findByOptions(filterUser);
   }
@@ -110,7 +112,7 @@ export class UserControllerController {
     type: Number,
     description: 'user id',
   })
-  delete(@Param('id') id: number) {
+  async delete(@Param('id') id: number) {
     return this.userService
       .delete(id)
       .then((res) => {
@@ -141,7 +143,7 @@ export class UserControllerController {
   @ApiBody({
     type: User,
   })
-  update(@Param('id') id: number, @Body() body: User) {
+  async update(@Param('id') id: number, @Body() body: User) {
     return this.userService
       .update(id, body)
       .then((res) => {
@@ -165,7 +167,7 @@ export class UserControllerController {
   @ApiBody({
     type: User,
   })
-  selfUpdate(@GetUser() payload, @Body() body: User) {
+  async selfUpdate(@GetUser() payload: JwtPayload, @Body() body: User) {
     return this.userService
       .update(payload.userId, body)
       .then((res) => {
