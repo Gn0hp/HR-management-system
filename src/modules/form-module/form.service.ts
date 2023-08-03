@@ -9,7 +9,12 @@ import { Form } from './Form';
 import { QueryParams } from '../../commons/query_params';
 import { In, Repository } from 'typeorm';
 import { Cron } from '@nestjs/schedule';
-import { EMPLOYEE_FORM_STATUS_NEW } from '../../commons/globals/Constants';
+import {
+  EMPLOYEE_FORM_STATUS_NEW,
+  FORM_STATUS_CLOSED,
+  FORM_STATUS_NEW,
+} from '../../commons/globals/Constants';
+import { format, addDays } from 'date-fns';
 
 @Injectable()
 export class FormService implements IBaseService {
@@ -26,7 +31,6 @@ export class FormService implements IBaseService {
     }
     return await this.formRepository.save(formDto.toEntity());
   }
-  async approve(formId: number) {}
 
   async delete(id: number) {
     return this.formRepository.delete(id);
@@ -73,11 +77,49 @@ export class FormService implements IBaseService {
     }
     return form.status === EMPLOYEE_FORM_STATUS_NEW;
   }
-  // @Cron('*/30 * * * * *')
-  // reportService() {
-  //   // TODO: quét mỗi 30s dựa vào ngày hết hạn của form có ngày hết hạn gần nhất trong db để report list user chưa hoàn thành form
-  //   this.logger.log('Every 30 seconds');
-  // }
-  // @Cron('* * * * *')
-  // updateFormStatus() {}
+  async findsWithDateDaysAfterCurrentDate() {
+    const currentDate = new Date();
+    const oneDayAfterCurrentDate = addDays(currentDate, 2);
+    const formattedDate = format(currentDate, 'yyyy-MM-dd HH:mm:ss');
+    const formattedOneDayAfterCurrentDate = format(
+      oneDayAfterCurrentDate,
+      'yyyy-MM-dd HH:mm:ss',
+    );
+
+    return this.formRepository
+      .createQueryBuilder('form')
+      .where(
+        'form.expiry_date BETWEEN :currentDate AND :oneDayAfterCurrentDate',
+        {
+          currentDate: formattedDate,
+          oneDayAfterCurrentDate: formattedOneDayAfterCurrentDate,
+        },
+      )
+      .getMany();
+  }
+  async closeFormExpired() {
+    const currentDate = new Date();
+    const formattedDate = format(currentDate, 'yyyy-MM-dd HH:mm:ss');
+    return this.formRepository
+      .createQueryBuilder('form')
+      .where('form.expiry_date < :currentDate', { currentDate: formattedDate })
+      .andWhere('form.status = :status', { status: FORM_STATUS_NEW })
+      .update({ status: FORM_STATUS_CLOSED })
+      .execute();
+  }
+
+  // Cron at 00:00:00 every day scan nearly expire date (1 day from now) to notify
+  // @Cron('0 0 0 * * *')
+  @Cron('0 * * * * *')   // for testing
+  async reportService() {
+    this.findsWithDateDaysAfterCurrentDate().then((res) => {
+      this.logger.log('findsWithDateDaysAfterCurrentDate return: ', res);
+    });
+  }
+  @Cron('*/30 * * * * *')
+  async closeFormExpiredService() {
+    this.closeFormExpired().then((res) => {
+      this.logger.log('closeFormExpiredService returns: ', res);
+    });
+  }
 }

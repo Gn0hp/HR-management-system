@@ -19,7 +19,7 @@ export class DefaultModel {
 
   @Column({
     nullable: true,
-    type: 'timestamp',
+    type: 'integer',
   })
   @ApiProperty({
     description: 'id of user who created this record',

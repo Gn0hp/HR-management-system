@@ -1,6 +1,7 @@
 import {
   Body,
-  Controller, Delete,
+  Controller,
+  Delete,
   Get,
   Param,
   Patch,
@@ -35,9 +36,11 @@ import {
   READ_PERMISSION,
   WRITE_PERMISSION,
 } from '../../commons/globals/Constants';
+import { ResponseInterceptor } from '../../commons/CommonResponse';
 
 @Controller('roles')
 @UseGuards(JwtAuthGuard)
+@UseInterceptors(ResponseInterceptor)
 @ApiTags('Roles')
 export class RoleControllerController {
   constructor(private readonly roleService: RoleService) {}

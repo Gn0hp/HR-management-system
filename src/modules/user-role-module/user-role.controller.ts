@@ -1,11 +1,11 @@
 import {
   Body,
-  Controller, Delete,
+  Controller,
+  Delete,
   Get,
-  Inject,
   Param,
-  Patch,
-  Post, Put,
+  Post,
+  Put,
   Query,
   UseGuards,
   UseInterceptors,
@@ -21,17 +21,23 @@ import { UserRole } from '../user-module/UserRole';
 import { ApiOperation, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { UserRoleDto } from '../../entities/dtos/UserRoleDto';
 import { JwtAuthGuard } from '../../auth/jwt/jwt';
-import {AuthInterceptor, RequiredPermission} from '../auth-module/auth.interceptor';
 import {
-  DELETE_PERMISSION, READ_PERMISSION,
+  AuthInterceptor,
+  RequiredPermission,
+} from '../auth-module/auth.interceptor';
+import {
+  DELETE_PERMISSION,
+  READ_PERMISSION,
   UPDATE_PERMISSION,
   WRITE_PERMISSION,
 } from '../../commons/globals/Constants';
 import { UserService } from '../user-module/user-service';
+import { ResponseInterceptor } from '../../commons/CommonResponse';
 
 // just need authentication, not required any roles or permissions (for get request only)
 @Controller('user-roles')
 @UseGuards(JwtAuthGuard)
+@UseInterceptors(ResponseInterceptor)
 @ApiTags('User Roles')
 export class UserRoleController {
   constructor(private readonly service: UserRoleService) {}

@@ -8,6 +8,7 @@ import {
   Query,
   Req,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { AuthService } from './auth.service';
@@ -15,9 +16,10 @@ import { User } from 'src/modules/user-module/User';
 import { GetUser, JwtAuthGuard } from '../../auth/jwt/jwt';
 import { JwtPayload } from '../../auth/jwt/jwtPayload';
 import { ApiBody, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
-import { commonResponse } from '../../commons/CommonResponse';
+import { ResponseInterceptor } from '../../commons/CommonResponse';
 
 @Controller('auth')
+@UseInterceptors(ResponseInterceptor)
 @ApiTags('Authentication')
 export class AuthController {
   constructor(
@@ -49,6 +51,7 @@ export class AuthController {
     // return JSON.stringify(this.service.login(user));
   }
   @Post('register')
+  @UseInterceptors(ResponseInterceptor)
   @ApiOperation({
     summary: 'Register new user',
   })
@@ -66,7 +69,7 @@ export class AuthController {
       status: 'ACTIVE',
       created_at: new Date(),
     };
-    return commonResponse(this.service.registerNewUser(user));
+    return this.service.registerNewUser(user);
   }
   @Post('refresh-token')
   @UseGuards(JwtAuthGuard)
