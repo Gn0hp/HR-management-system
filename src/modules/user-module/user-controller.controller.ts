@@ -21,11 +21,11 @@ import {
   RequiredPermission,
 } from '../auth-module/auth.interceptor';
 import { User } from './User';
-import { ApiBody, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
-import { parseQuery } from '../../commons/query_params';
+import {ApiBody, ApiOperation, ApiParam, ApiQuery, ApiTags} from '@nestjs/swagger';
+import {CommonQueryParam, parseQuery, queryParamBuilder} from '../../commons/query_params';
 import { ResponseInterceptor } from '../../commons/CommonResponse';
 import { JwtPayload } from '../../auth/jwt/jwtPayload';
-import {GetUser, JwtAuthGuard} from "../../auth/jwt/jwt";
+import { GetUser, JwtAuthGuard } from '../../auth/jwt/jwt';
 
 @Controller('users')
 @UseGuards(JwtAuthGuard)
@@ -68,6 +68,28 @@ export class UserControllerController {
   })
   findAll() {
     return this.userService.findAll();
+  }
+
+  @Get('get-by-ids')
+  @UseInterceptors(AuthInterceptor)
+  @RequiredPermission(READ_PERMISSION)
+  @CommonQueryParam()
+  @ApiOperation({
+    summary: 'Get users by ids',
+    description: 'Get users by ids, Permission: Read Permission',
+  })
+  @ApiQuery({
+    name: 'ids',
+    type: String,
+    description: 'role ids',
+    example: 'ids=1,2,3',
+  })
+  findByIds(@Query() query: any) {
+    if (!query.ids) throw new Error('ids is required');
+    if (typeof query.ids !== 'string')
+      throw new Error('ids must be string like "1,2,3"');
+    const ids = query.ids.split(',');
+    return this.userService.findByIds(ids, queryParamBuilder(query));
   }
   @Get('get-roles/:id')
   @UseInterceptors(AuthInterceptor)

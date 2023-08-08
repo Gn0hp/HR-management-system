@@ -10,5 +10,7 @@ export class UserRoleDto implements IBaseDTO {
     return true;
   }
 
-  toEntity(): any {}
+  toEntity(): any {
+    return this.userRole;
+  }
 }
