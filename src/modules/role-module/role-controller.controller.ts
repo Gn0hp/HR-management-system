@@ -77,7 +77,7 @@ export class RoleControllerController {
   @CommonQueryParam()
   @ApiOperation({
     summary: 'Get role by ids',
-    description: 'Get role by ids, Permission: not required',
+    description: 'Get role by ids, Permission: Read Permission',
   })
   @ApiQuery({
     name: 'ids',

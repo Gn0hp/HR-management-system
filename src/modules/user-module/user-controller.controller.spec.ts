@@ -1,10 +1,9 @@
-import { Test, TestingModule } from '@nestjs/testing';
 import { UserControllerController } from './user-controller.controller';
 import { UserService } from './user-service';
-import { UserRoleModuleModule } from '../user-role-module/user-role-module.module';
 import { User } from './User';
-import { JwtAuthGuard } from '../../auth/jwt/jwt';
 
+const IDS_NULL_ERROR = 'ids is required';
+const IDS_INVALID_ERROR = 'ids must be string like "1,2,3"';
 describe('UserControllerController', () => {
   let service: UserService;
   let controller: UserControllerController;
@@ -76,19 +75,19 @@ describe('UserControllerController', () => {
   it('should be defined', () => {
     expect(controller).toBeDefined();
   });
-  it('should ensure the JwtGuard is apply to routes', async () => {
-    const guards = Reflect.getMetadata(
-      '__guards__',
-      UserControllerController.prototype,
-    );
-    console.log(guards);
-  });
+  // it('should ensure the JwtGuard is apply to routes', async () => {
+  //   const guards = Reflect.getMetadata(
+  //     '__guards__',
+  //     UserControllerController.prototype,
+  //   );
+  //   console.log(guards);
+  // });
   it('should find all users success', async () => {
     jest.spyOn(service, 'findAll').mockImplementation(async () => allUsers);
     const actualResult = await controller.findAll();
     expect(actualResult).toEqual(allUsers);
   });
-  it('should find user by id success', async () => {
+  it('should find user by id successfully', async () => {
     jest.spyOn(service, 'findById').mockImplementation(async () => allUsers[0]);
     expect(await controller.findById(1)).toEqual(allUsers[0]);
   });
@@ -96,5 +95,98 @@ describe('UserControllerController', () => {
     jest.spyOn(service, 'findById').mockImplementation(async () => null);
     const actualResult = await controller.findById(10);
     expect(actualResult).toBeNull();
+  });
+  it('should find user by ids successfully', async () => {
+    const expectResult = [allUsers[0], allUsers[1], allUsers[3]];
+    jest
+      .spyOn(service, 'findByIds')
+      .mockImplementation(async () => expectResult);
+    const actualResult = await controller.findByIds({
+      ids: '1, 2, 4',
+    });
+    expect(actualResult).toEqual(expectResult);
+  });
+  it('should throw error that ids is not provided', async () => {
+    jest.spyOn(service, 'findByIds').mockImplementation(async () => null);
+    try {
+      await controller.findByIds({ ids: null });
+    } catch (err) {
+      expect(err.message).toEqual(IDS_NULL_ERROR);
+    }
+  });
+  it('should throw error that ids is not valid', async () => {
+    const expectResult = () => {
+      throw new Error(IDS_INVALID_ERROR);
+    };
+    jest
+      .spyOn(service, 'findByIds')
+      .mockImplementation(async () => expectResult());
+    try {
+      await controller.findByIds({ ids: '1, 2, 3, 4, 5' });
+    } catch (err) {
+      expect(err.message).toEqual(IDS_INVALID_ERROR);
+    }
+  });
+  it('should find users by options successfully', async () => {
+    const expectResult = [allUsers[0], allUsers[3]];
+    jest
+      .spyOn(service, 'findByOptions')
+      .mockImplementation(async () => expectResult);
+    const actualResult = await controller.findByOptions({
+      status: 'ACTIVE',
+      last_name: 'Tran',
+    });
+    expect(actualResult).toEqual(expectResult);
+  });
+  // Valid later in DTOs
+  it('should find users by options failed because of invalid keys', async () => {
+    jest.spyOn(service, 'findByOptions').mockImplementation(async () => null);
+    const actualResult = await controller.findByOptions({
+      alive: true,
+      live_at: 'USA',
+    });
+    expect(actualResult).toBeNull();
+  });
+  it('should update user successfully', async () => {
+    jest
+      .spyOn(service, 'update')
+      .mockImplementation(async () => new Promise((resolve) => resolve()));
+    const actualResult = await controller.update(1, {
+      first_name: 'Phong',
+      last_name: 'Tran',
+    });
+    expect(actualResult).toEqual({
+      message: undefined,
+      result: true,
+    });
+  });
+  it('should update user failed because of invalid id', async () => {
+    jest.spyOn(service, 'update').mockImplementation(async () => null);
+    const actualResult = await controller.update(10, {
+      first_name: 'Phong',
+      last_name: 'Tran',
+    });
+    expect(actualResult).toEqual({
+      message: null,
+      result: true,
+    });
+  });
+  it('should delete user successfully', async () => {
+    jest
+      .spyOn(service, 'delete')
+      .mockImplementation(async () => new Promise((resolve) => resolve()));
+    const actualResult = await controller.delete(1);
+    expect(actualResult).toEqual({
+      message: undefined,
+      result: true,
+    });
+  });
+  it('should delete user failed because of invalid id', async () => {
+    jest.spyOn(service, 'delete').mockImplementation(async () => null);
+    const actualResult = await controller.delete(10);
+    expect(actualResult).toEqual({
+      message: null,
+      result: true,
+    });
   });
 });

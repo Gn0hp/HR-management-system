@@ -64,9 +64,11 @@ export class UserService implements IBaseService {
   }
   async findByIds(condition, options?: any) {
     const users = await this.findAll();
-    return users.filter((user) => {
+    condition = condition.map((id: string) => parseInt(id));
+    const res = users.filter((user) => {
       return condition.includes(user.id);
     });
+    return res;
   }
   findOneByOptions(condition, options?: any) {
     throw new Error('Method not implemented.');

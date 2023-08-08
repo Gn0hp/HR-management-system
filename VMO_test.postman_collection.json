@@ -1,0 +1,1515 @@
+{
+	"info": {
+		"_postman_id": "74947d9f-797d-47a7-8a9c-2179b239bf17",
+		"name": "VMO_test_imported",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "18228268"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "POST 3000: register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"account-test-01\",\r\n    \"first_name\": \"phong\",\r\n    \"last_name\": \"Tran\",\r\n    \"email\": \"tranphong@mail.com\",\r\n    \"phone\": \"0123546879\",\r\n    \"password\": \"444\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/auth/register",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST:3000: sign in",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "// admin: full permission\r\n{\r\n    \"username\": \"gn0hp\",\r\n    \"password\": \"111\"\r\n}\r\n// employee: no \r\n// {\r\n//     \"username\": \"hung_test\",\r\n//     \"password\": \"444\"\r\n// }\r\n\r\n// HR: R RF WF\r\n// {\r\n//     \"username\": \"gn0hp_test04\",\r\n//     \"password\": \"444\"\r\n// }\r\n\r\n// Manager: RF AF\r\n// {\r\n//     \"username\": \"phongTran-test00001-rename\",\r\n//     \"password\": \"333\"\r\n// }\r\n\r\n// Director: R RF AF WF\r\n// {\r\n//     \"username\": \"\",\r\n//     \"password\": \"\"\r\n// }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/auth/login/",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"auth",
+								"login",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST refresh token",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInVzZXJuYW1lIjoiZ24waHAiLCJlbWFpbCI6InBob25ndGtAbWFpbC5jb20iLCJpYXQiOjE2OTE1MDcwOTAsImV4cCI6MTY5MTUwODg5MH0.i0UKXiH89g2saaS4votljDbbF_HzMqs7_-ORT-AYnqc",
+								"type": "text"
+							},
+							{
+								"key": "Authorization-Refresh",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInVzZXJuYW1lIjoiZ24waHAiLCJlbWFpbCI6InBob25ndGtAbWFpbC5jb20iLCJpYXQiOjE2OTE1MDcwOTAsImV4cCI6MTY5MjExMTg5MH0.FmtIRc5ota8BFERmO5X4a5DQLIWu7Koeuo915U_9n5U",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{host}}/auth/refresh-token",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"auth",
+								"refresh-token"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Form",
+			"item": [
+				{
+					"name": "Create new form",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInVzZXJuYW1lIjoiZ24waHAiLCJlbWFpbCI6InBob25ndGtAbWFpbC5jb20iLCJpYXQiOjE2OTE1MDgzNjcsImV4cCI6MTY5MTUxMDE2N30.z5jy9d0rnmSUxy7fQF32KNcAFUxJimPYTtMqX6Z1WFI",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"subject\" : \"gn0hp test mail service beta test\",\r\n    \"text\": \"New type 2 beta form has just been created\",\r\n    \"link\": \"https://link-to-form-created-type-2-beta.com\",\r\n    \"type\": \"1\",\r\n    \"expireDate\": \"2023-08-15\"\r\n    // \"attachments\": {\r\n    //     \"filename\": \"\",\r\n    //     \"content\": \"\",\r\n    //     \"path\": \"\",\r\n    //     \"contentType\": \"\",\r\n    //     \"cid\": \"\",\r\n    //     \"encoding\": \"\",\r\n    //     \"contentDisposition\": \"\",\r\n    //     \"href\":\"\"\r\n    // }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/v1/forms/create",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"forms",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Submit form",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEyLCJ1c2VybmFtZSI6Imh1bmdfdGVzdCIsImVtYWlsIjoidHJhbmh1bmdAbWFpbC5jb20iLCJpYXQiOjE2OTE1MDk1NTEsImV4cCI6MTY5MTUxMTM1MX0.L9eSuNoAWET2XwX2OiJRom-FtqJ52xZyEttmZFylbf8",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"formId\": 5,\r\n    \"note\": \"hung_test submit this form 1 - test re-submit for beta form\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/forms/submit",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"forms",
+								"submit"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Approve form",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsInVzZXJuYW1lIjoiZ24waHBfdGVzdDAxIiwiZW1haWwiOiJtYXJ0aW5AbWFpbC5jb20iLCJpYXQiOjE2OTE1MDk3MDcsImV4cCI6MTY5MTUxMTUwN30.HxgjrzMnQywdwPIwSdX2axU4GvinxPWX_RUXyChJ5gE",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"employeeFormId\": 3\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/forms/approve",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"forms",
+								"approve"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Close submitted form",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsInVzZXJuYW1lIjoiZ24waHBfdGVzdDAxIiwiZW1haWwiOiJtYXJ0aW5AbWFpbC5jb20iLCJpYXQiOjE2OTE1MDk3MDcsImV4cCI6MTY5MTUxMTUwN30.HxgjrzMnQywdwPIwSdX2axU4GvinxPWX_RUXyChJ5gE",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"employeeFormId\": 3\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/forms/close-submitted-form/5",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"forms",
+								"close-submitted-form",
+								"5"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "find all",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInVzZXJuYW1lIjoiZ24waHAiLCJlbWFpbCI6InBob25ndGtAbWFpbC5jb20iLCJpYXQiOjE2OTE1MDgzNjcsImV4cCI6MTY5MTUxMDE2N30.z5jy9d0rnmSUxy7fQF32KNcAFUxJimPYTtMqX6Z1WFI",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{host}}/forms/get",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"forms",
+								"get"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get By Id",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsInVzZXJuYW1lIjoiZ24waHBfdGVzdDAxIiwiZW1haWwiOiJtYXJ0aW5AbWFpbC5jb20iLCJpYXQiOjE2OTE1MDk3MDcsImV4cCI6MTY5MTUxMTUwN30.HxgjrzMnQywdwPIwSdX2axU4GvinxPWX_RUXyChJ5gE",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{host}}/forms/get-by-id/5",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"forms",
+								"get-by-id",
+								"5"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get By Ids",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsInVzZXJuYW1lIjoiZ24waHBfdGVzdDAxIiwiZW1haWwiOiJtYXJ0aW5AbWFpbC5jb20iLCJpYXQiOjE2OTE1MDk3MDcsImV4cCI6MTY5MTUxMTUwN30.HxgjrzMnQywdwPIwSdX2axU4GvinxPWX_RUXyChJ5gE",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{host}}/forms/get-by-ids?ids=5,4",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"forms",
+								"get-by-ids"
+							],
+							"query": [
+								{
+									"key": "ids",
+									"value": "5,4"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get by options",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsInVzZXJuYW1lIjoiZ24waHBfdGVzdDAxIiwiZW1haWwiOiJtYXJ0aW5AbWFpbC5jb20iLCJpYXQiOjE2OTE1MDk3MDcsImV4cCI6MTY5MTUxMTUwN30.HxgjrzMnQywdwPIwSdX2axU4GvinxPWX_RUXyChJ5gE",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{host}}/forms/get-by-options?name=gn0hp%20test%20mail%20service",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"forms",
+								"get-by-options"
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "gn0hp%20test%20mail%20service"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update by id",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/form/update/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"form",
+								"update",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete by id",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/form/delete/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"form",
+								"delete",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Close form",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsInVzZXJuYW1lIjoiZ24waHBfdGVzdDAxIiwiZW1haWwiOiJtYXJ0aW5AbWFpbC5jb20iLCJpYXQiOjE2OTE1MDk3MDcsImV4cCI6MTY5MTUxMTUwN30.HxgjrzMnQywdwPIwSdX2axU4GvinxPWX_RUXyChJ5gE",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{host}}/forms/close-form/5",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"forms",
+								"close-form",
+								"5"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Employee Form",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInVzZXJuYW1lIjoiZ24waHAiLCJlbWFpbCI6InBob25ndGtAbWFpbC5jb20iLCJpYXQiOjE2OTE1MDgzNjcsImV4cCI6MTY5MTUxMDE2N30.z5jy9d0rnmSUxy7fQF32KNcAFUxJimPYTtMqX6Z1WFI",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{host}}/forms/get-ef-by-id/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"forms",
+								"get-ef-by-id",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all Employee Form",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInVzZXJuYW1lIjoiZ24waHAiLCJlbWFpbCI6InBob25ndGtAbWFpbC5jb20iLCJpYXQiOjE2OTE1MDgzNjcsImV4cCI6MTY5MTUxMDE2N30.z5jy9d0rnmSUxy7fQF32KNcAFUxJimPYTtMqX6Z1WFI",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{host}}/forms/get-all-ef",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"forms",
+								"get-all-ef"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "get user by id",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/user-controller/get/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"user-controller",
+								"get",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "find all",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEyLCJ1c2VybmFtZSI6Imh1bmdfdGVzdCIsInJvbGVzIjpbIkVNUExPWUVFIl0sInBlcm1pc3Npb25zIjpbXSwiaWF0IjoxNjg5Nzc2OTMyLCJleHAiOjE2ODk3Nzg3MzJ9.3fAO9ZWskGBRiaWGnR7CwGAvIJQL3fN12N8PXBHcQrM",
+								"type": "text"
+							},
+							{
+								"key": "Authorization-Refresh",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEyLCJ1c2VybmFtZSI6Imh1bmdfdGVzdCIsInJvbGVzIjpbIkVNUExPWUVFIl0sInBlcm1pc3Npb25zIjpbXSwiaWF0IjoxNjg5Nzc2OTMyLCJleHAiOjE2OTAzODE3MzJ9.ga9faqqYBjmdAIUKJSlA3i2q5UasxlFhKxD5S167u7c",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/user-controller/get",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"user-controller",
+								"get"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Self Info",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEyLCJ1c2VybmFtZSI6Imh1bmdfdGVzdCIsImVtYWlsIjoidHJhbmh1bmdAbWFpbC5jb20iLCJpYXQiOjE2OTE1MDk1NTEsImV4cCI6MTY5MTUxMTM1MX0.L9eSuNoAWET2XwX2OiJRom-FtqJ52xZyEttmZFylbf8",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{host}}/users/self-info",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"users",
+								"self-info"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update user",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEyLCJ1c2VybmFtZSI6Imh1bmdfdGVzdCIsImVtYWlsIjoidHJhbmh1bmdAbWFpbC5jb20iLCJpYXQiOjE2OTA3NDMzMjQsImV4cCI6MTY5MDc0NTEyNH0.Hn2yrK2fMXKxdJU1IHQDrSDErb68WphRqxqZsKYeMBI",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"phongTran-test00001-rename\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/users/update/3",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"users",
+								"update",
+								"3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE user by id",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/user-controller/delete/3",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"user-controller",
+								"delete",
+								"3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PATCH Info self-update",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE0LCJ1c2VybmFtZSI6ImFjY291bnQtdGVzdC0wMSIsImVtYWlsIjoidHJhbnBob25nQG1haWwuY29tIiwiaWF0IjoxNjkxNTA2Nzk3LCJleHAiOjE2OTE1MDg1OTd9.ezMZLsfkMbX0Ih737wrKwLvZ47nfqjAZrO0G6PkWNDs",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"address\": \"Dong Da, Ha Noi\",\r\n    \"avatar\": \"https://link-to-test-avatar-for-user-12\",\r\n    \"cccd_id\": \"45632487438\",\r\n    \"bhxh_number\": \"bhxh-45678218\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/v1/users/self-update",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"self-update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "find by ids",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInVzZXJuYW1lIjoiZ24waHAiLCJlbWFpbCI6InBob25ndGtAbWFpbC5jb20iLCJpYXQiOjE2OTE1MDcwOTAsImV4cCI6MTY5MTUwODg5MH0.i0UKXiH89g2saaS4votljDbbF_HzMqs7_-ORT-AYnqc",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{host}}/users/get-by-ids?ids=1,2,3",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"users",
+								"get-by-ids"
+							],
+							"query": [
+								{
+									"key": "ids",
+									"value": "1,2,3"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "find user's permission",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInVzZXJuYW1lIjoiZ24waHAiLCJlbWFpbCI6InBob25ndGtAbWFpbC5jb20iLCJpYXQiOjE2OTE1MDcwOTAsImV4cCI6MTY5MTUwODg5MH0.i0UKXiH89g2saaS4votljDbbF_HzMqs7_-ORT-AYnqc",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{host}}/users/get-roles/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"users",
+								"get-roles",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Find by options",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInVzZXJuYW1lIjoiZ24waHAiLCJlbWFpbCI6InBob25ndGtAbWFpbC5jb20iLCJpYXQiOjE2OTE1MDcwOTAsImV4cCI6MTY5MTUwODg5MH0.i0UKXiH89g2saaS4votljDbbF_HzMqs7_-ORT-AYnqc",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{host}}/users/get-by-options?last_name=Tran",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"users",
+								"get-by-options"
+							],
+							"query": [
+								{
+									"key": "last_name",
+									"value": "Tran"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete user",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInVzZXJuYW1lIjoiZ24waHAiLCJlbWFpbCI6InBob25ndGtAbWFpbC5jb20iLCJpYXQiOjE2OTE1MDcwOTAsImV4cCI6MTY5MTUwODg5MH0.i0UKXiH89g2saaS4votljDbbF_HzMqs7_-ORT-AYnqc",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{host}}/users/delete/14",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"users",
+								"delete",
+								"14"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "UserRole",
+			"item": [
+				{
+					"name": "find all",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInVzZXJuYW1lIjoiZ24waHAiLCJlbWFpbCI6InBob25ndGtAbWFpbC5jb20iLCJpYXQiOjE2OTE1MDcwOTAsImV4cCI6MTY5MTUwODg5MH0.i0UKXiH89g2saaS4votljDbbF_HzMqs7_-ORT-AYnqc",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{host}}/user-roles/get?sortBy=name:desc&take=2&skip=1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"user-roles",
+								"get"
+							],
+							"query": [
+								{
+									"key": "sortBy",
+									"value": "name:desc"
+								},
+								{
+									"key": "take",
+									"value": "2"
+								},
+								{
+									"key": "skip",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "find by ids",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInVzZXJuYW1lIjoiZ24waHAiLCJlbWFpbCI6InBob25ndGtAbWFpbC5jb20iLCJpYXQiOjE2OTE1MDcwOTAsImV4cCI6MTY5MTUwODg5MH0.i0UKXiH89g2saaS4votljDbbF_HzMqs7_-ORT-AYnqc",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{host}}/user-roles/get-by-ids?ids=2,4,6",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"user-roles",
+								"get-by-ids"
+							],
+							"query": [
+								{
+									"key": "ids",
+									"value": "2,4,6"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "find by options",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInVzZXJuYW1lIjoiZ24waHAiLCJlbWFpbCI6InBob25ndGtAbWFpbC5jb20iLCJpYXQiOjE2OTE1MDgzNjcsImV4cCI6MTY5MTUxMDE2N30.z5jy9d0rnmSUxy7fQF32KNcAFUxJimPYTtMqX6Z1WFI",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{host}}/user-roles/get-by-options?status=ACTIVE&name=admin%201",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"user-roles",
+								"get-by-options"
+							],
+							"query": [
+								{
+									"key": "status",
+									"value": "ACTIVE"
+								},
+								{
+									"key": "name",
+									"value": "admin%201"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get user role with options",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/user-role/get?select=id,name&order=name:DESC&take=5&skip=0&cache=true",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"user-role",
+								"get"
+							],
+							"query": [
+								{
+									"key": "select",
+									"value": "id,name"
+								},
+								{
+									"key": "order",
+									"value": "name:DESC"
+								},
+								{
+									"key": "take",
+									"value": "5"
+								},
+								{
+									"key": "skip",
+									"value": "0"
+								},
+								{
+									"key": "cache",
+									"value": "true"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Grant Role",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInVzZXJuYW1lIjoiZ24waHAiLCJlbWFpbCI6InBob25ndGtAbWFpbC5jb20iLCJpYXQiOjE2OTE1MDYzNzksImV4cCI6MTY5MTUwODE3OX0.wEkMI0SRV5ggPMT-shs5rGhbz8p4YtE6z5qpOXup6ok",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"employee 6\",\r\n    \"description\": \"user id 14\",\r\n    \"userId\": 14,\r\n    \"roleId\": 5\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/user-roles/save",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"user-roles",
+								"save"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "find by id",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInVzZXJuYW1lIjoiZ24waHAiLCJlbWFpbCI6InBob25ndGtAbWFpbC5jb20iLCJpYXQiOjE2OTE1MDcwOTAsImV4cCI6MTY5MTUwODg5MH0.i0UKXiH89g2saaS4votljDbbF_HzMqs7_-ORT-AYnqc",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{host}}/user-roles/get-by-id/3",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"user-roles",
+								"get-by-id",
+								"3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "find one by options",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInVzZXJuYW1lIjoiZ24waHAiLCJlbWFpbCI6InBob25ndGtAbWFpbC5jb20iLCJpYXQiOjE2OTE1MDgzNjcsImV4cCI6MTY5MTUxMDE2N30.z5jy9d0rnmSUxy7fQF32KNcAFUxJimPYTtMqX6Z1WFI",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{host}}/user-roles/get-one-by-options?id=1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"user-roles",
+								"get-one-by-options"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Role",
+			"item": [
+				{
+					"name": "find all",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/form/get",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"form",
+								"get"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get By Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/form/get-by-id/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"form",
+								"get-by-id",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get By Ids",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/form/get-by-ids?ids=1,3,4",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"form",
+								"get-by-ids"
+							],
+							"query": [
+								{
+									"key": "ids",
+									"value": "1,3,4"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get by options",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/form/get-by-options?name=<form-name>&status=ACTIVE",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"form",
+								"get-by-options"
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "<form-name>"
+								},
+								{
+									"key": "status",
+									"value": "ACTIVE"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update by id",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/form/update/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"form",
+								"update",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete by id",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/form/delete/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"form",
+								"delete",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Permission",
+			"item": [
+				{
+					"name": "find all",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/form/get",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"form",
+								"get"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get By Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/form/get-by-id/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"form",
+								"get-by-id",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get By Ids",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/form/get-by-ids?ids=1,3,4",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"form",
+								"get-by-ids"
+							],
+							"query": [
+								{
+									"key": "ids",
+									"value": "1,3,4"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get by options",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/form/get-by-options?name=<form-name>&status=ACTIVE",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"form",
+								"get-by-options"
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "<form-name>"
+								},
+								{
+									"key": "status",
+									"value": "ACTIVE"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update by id",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/form/update/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"form",
+								"update",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete by id",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/form/delete/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"form",
+								"delete",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "RolePermit",
+			"item": [
+				{
+					"name": "find all",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/form/get",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"form",
+								"get"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get By Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/form/get-by-id/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"form",
+								"get-by-id",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get By Ids",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/form/get-by-ids?ids=1,3,4",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"form",
+								"get-by-ids"
+							],
+							"query": [
+								{
+									"key": "ids",
+									"value": "1,3,4"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get by options",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/form/get-by-options?name=<form-name>&status=ACTIVE",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"form",
+								"get-by-options"
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "<form-name>"
+								},
+								{
+									"key": "status",
+									"value": "ACTIVE"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update by id",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/form/update/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"form",
+								"update",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete by id",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/form/delete/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"form",
+								"delete",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Statistic",
+			"item": [
+				{
+					"name": "Get All User Not Complete Form",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInVzZXJuYW1lIjoiZ24waHAiLCJlbWFpbCI6InBob25ndGtAbWFpbC5jb20iLCJpYXQiOjE2OTE1MDgzNjcsImV4cCI6MTY5MTUxMDE2N30.z5jy9d0rnmSUxy7fQF32KNcAFUxJimPYTtMqX6Z1WFI",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{host}}/forms/get-stat-complete-form/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"forms",
+								"get-stat-complete-form",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer"
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "host",
+			"value": "http://localhost:3000/api/v1",
+			"type": "string"
+		}
+	]
+}

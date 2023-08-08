@@ -323,7 +323,31 @@ export class FormController {
   findById(@Param('id') id: number) {
     return this.service.findById(id);
   }
-
+  @Get('get-ef-by-id/:id')
+  @UseInterceptors(AuthInterceptor)
+  @RequiredPermission(READ_FORM_PERMISSION)
+  @ApiOperation({
+    summary: 'Get employee form by id',
+    description: 'Get employee form by id, Permission: READ_FORM_PERMISSION',
+  })
+  @ApiParam({
+    name: 'id',
+    type: Number,
+    description: 'form id',
+  })
+  async findEfById(@Param('id') id: number) {
+    return this.employeeService.findById(id);
+  }
+  @Get('get-all-ef')
+  @UseInterceptors(AuthInterceptor)
+  @RequiredPermission(READ_FORM_PERMISSION)
+  @ApiOperation({
+    summary: 'Get all employee form',
+    description: 'Get all employee form, Permission: READ_FORM_PERMISSION',
+  })
+  async findAllEf(@Query() query) {
+    return this.employeeService.findAll(queryParamBuilder(query));
+  }
   @Get('get-by-ids')
   @UseInterceptors(AuthInterceptor)
   @RequiredPermission(READ_FORM_PERMISSION)

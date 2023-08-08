@@ -17,7 +17,7 @@ import {
   queryParamBuilder,
   QueryParams,
 } from '../../commons/query_params';
-import { UserRole } from '../user-module/UserRole';
+import {UserRole, UserRolePostRequest} from '../user-module/UserRole';
 import { ApiOperation, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { UserRoleDto } from '../../entities/dtos/UserRoleDto';
 import { JwtAuthGuard } from '../../auth/jwt/jwt';
@@ -134,8 +134,8 @@ export class UserRoleController {
     summary: 'Save user-role',
     description: 'Save user-role, Require permission: W',
   })
-  save(@Body() body: UserRole) {
-    return this.service.save(new UserRoleDto(body));
+  save(@Body() body: UserRolePostRequest) {
+    return this.service.save(body);
   }
   @Put('update/:id')
   @UseInterceptors(AuthInterceptor)

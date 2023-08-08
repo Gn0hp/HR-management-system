@@ -6,7 +6,8 @@ import { RoleService } from '../role-module/role-service';
 import { IBaseService } from '../../commons/interfaces/IBaseService';
 import { QueryParams } from '../../commons/query_params';
 import { UserRoleDto } from '../../entities/dtos/UserRoleDto';
-import {UserRole} from "../user-module/UserRole";
+import {UserRole, UserRolePostRequest} from "../user-module/UserRole";
+import {UserService} from "../user-module/user-service";
 
 @Injectable()
 export class UserRoleService implements IBaseService {
@@ -45,7 +46,17 @@ export class UserRoleService implements IBaseService {
     return this.userRepository.findOne(condition);
   }
 
-  save(dto: UserRoleDto) {
+  async save(request: UserRolePostRequest) {
+    const role = await this.roleService.findById(request.roleId);
+    const userRole: UserRole = {
+      status: 'ACTIVE',
+      created_at: new Date(),
+      userId: request.userId,
+      role,
+      name: request.name,
+      description: request.description,
+    };
+    const dto = new UserRoleDto(userRole);
     if (!dto.isValid()) {
       throw new Error('UserRole is invalid');
     }

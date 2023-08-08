@@ -36,3 +36,13 @@ export class UserRole extends DefaultModel {
   @ManyToOne(() => Role, (role) => role.userRoles)
   role?: Role;
 }
+export class UserRolePostRequest {
+  @ApiProperty()
+  name?: string;
+  @ApiProperty()
+  description?: string;
+  @ApiProperty()
+  userId?: number;
+  @ApiProperty()
+  roleId?: number;
+}
