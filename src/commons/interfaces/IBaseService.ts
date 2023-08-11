@@ -1,6 +1,6 @@
 import { DeleteResult } from 'typeorm';
 import { EntityId } from 'typeorm/repository/EntityId';
-import {QueryParams} from "../query_params";
+import { QueryParams } from '../query_params';
 export interface IBaseService {
   findAll(options?: any);
 
@@ -11,12 +11,12 @@ export interface IBaseService {
                 id: IN([1,2,3]) Any
               }*/
   /* options: {
-  * select: ['id', 'name'],
-  * sort: { id: 'ASC', name: 'DESC' },
-  * take: 10,
-  * skip: 10,
-  *
-  * }*/
+   * select: ['id', 'name'],
+   * sort: { id: 'ASC', name: 'DESC' },
+   * take: 10,
+   * skip: 10,
+   *
+   * }*/
   findByIds(condition: any, options?: QueryParams);
 
   findOneByOptions(condition: any, options?: QueryParams);

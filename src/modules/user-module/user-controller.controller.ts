@@ -21,11 +21,22 @@ import {
   RequiredPermission,
 } from '../auth-module/auth.interceptor';
 import { User } from './User';
-import {ApiBody, ApiOperation, ApiParam, ApiQuery, ApiTags} from '@nestjs/swagger';
-import {CommonQueryParam, parseQuery, queryParamBuilder} from '../../commons/query_params';
+import {
+  ApiBody,
+  ApiOperation,
+  ApiParam,
+  ApiQuery,
+  ApiTags,
+} from '@nestjs/swagger';
+import {
+  CommonQueryParam,
+  parseQuery,
+  queryParamBuilder,
+} from '../../commons/query_params';
 import { ResponseInterceptor } from '../../commons/CommonResponse';
 import { JwtPayload } from '../../auth/jwt/jwtPayload';
 import { GetUser, JwtAuthGuard } from '../../auth/jwt/jwt';
+import { PageOptionsDto } from '../../commons/pagination/PageOptionsDto';
 
 @Controller('users')
 @UseGuards(JwtAuthGuard)
@@ -68,6 +79,13 @@ export class UserControllerController {
   })
   findAll() {
     return this.userService.findAll();
+  }
+
+  @Get('get-msql')
+  @UseInterceptors(AuthInterceptor)
+  @RequiredPermission(READ_PERMISSION)
+  findAllMsql(@Query() options: PageOptionsDto) {
+    return this.userService.findAllWithPage(options);
   }
 
   @Get('get-by-ids')
@@ -149,6 +167,25 @@ export class UserControllerController {
           message: err,
         };
       });
+  }
+  @Delete('soft-delete/:id')
+  @UseInterceptors(AuthInterceptor)
+  @RequiredPermission(DELETE_PERMISSION)
+  @ApiOperation({
+    summary: 'Soft delete user by id',
+    description: 'Soft delete user by id, Permission: DELETE_USER.',
+  })
+  @ApiParam({
+    name: 'id',
+    type: Number,
+    description: 'user id',
+  })
+  async softDelete(@Param('id') id: number) {
+    const updatedUser: User = {
+      is_deleted: true,
+      deleted_at: new Date(),
+    };
+    return this.userService.update(id, updatedUser);
   }
   @Put('update/:id')
   @UseInterceptors(AuthInterceptor)

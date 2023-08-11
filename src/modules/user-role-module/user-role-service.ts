@@ -6,31 +6,38 @@ import { RoleService } from '../role-module/role-service';
 import { IBaseService } from '../../commons/interfaces/IBaseService';
 import { QueryParams } from '../../commons/query_params';
 import { UserRoleDto } from '../../entities/dtos/UserRoleDto';
-import {UserRole, UserRolePostRequest} from "../user-module/UserRole";
-import {UserService} from "../user-module/user-service";
+import { UserRole, UserRolePostRequest } from './UserRole';
+import { UserService } from '../user-module/user-service';
 
 @Injectable()
 export class UserRoleService implements IBaseService {
   constructor(
-    @InjectRepository(UserRole) private userRepository: Repository<UserRole>,
+    @InjectRepository(UserRole)
+    private userRoleRepository: Repository<UserRole>,
     private roleService: RoleService,
+    private userService: UserService,
   ) {}
-  async findByUserId(id: number): Promise<UserRole[]> {
-    const options: FindManyOptions<UserRole> = {
-      where: { userId: id },
-    };
-    return await this.userRepository.find(options);
-  }
+  // async findByUserId(id: number): Promise<UserRole[]> {
+  //   const user = await this.userService.findById(id);
+  //   const options: FindManyOptions<UserRole> = {
+  //     where: {
+  //       user: {
+  //         id: user.id,
+  //       },
+  //     },
+  //   };
+  //   return await this.userRoleRepository.find(options);
+  // }
   findAll(options?: QueryParams) {
-    return this.userRepository.find(options);
+    return this.userRoleRepository.find(options);
   }
 
   async findById(id: number) {
-    return await this.userRepository.findOne({ where: { id } });
+    return await this.userRoleRepository.findOne({ where: { id } });
   }
 
   async findByIds(ids, options?: QueryParams) {
-    return await this.userRepository.find({
+    return await this.userRoleRepository.find({
       where: {
         id: In(ids),
       },
@@ -39,19 +46,20 @@ export class UserRoleService implements IBaseService {
   }
 
   async findByOptions(condition, options?: QueryParams) {
-    return await this.userRepository.find({ where: condition, ...options });
+    return await this.userRoleRepository.find({ where: condition, ...options });
   }
 
   findOneByOptions(condition) {
-    return this.userRepository.findOne(condition);
+    return this.userRoleRepository.findOne(condition);
   }
 
   async save(request: UserRolePostRequest) {
     const role = await this.roleService.findById(request.roleId);
+    const user = await this.userService.findById(request.userId);
     const userRole: UserRole = {
       status: 'ACTIVE',
       created_at: new Date(),
-      userId: request.userId,
+      user,
       role,
       name: request.name,
       description: request.description,
@@ -60,16 +68,16 @@ export class UserRoleService implements IBaseService {
     if (!dto.isValid()) {
       throw new Error('UserRole is invalid');
     }
-    return this.userRepository.save(dto.toEntity());
+    return this.userRoleRepository.save(dto.toEntity());
   }
 
   async update(id: number, entity: UserRoleDto) {
     if (!entity.isValid()) {
       throw new Error('UserRole is invalid');
     }
-    return await this.userRepository.update(id, entity.toEntity());
+    return await this.userRoleRepository.update(id, entity.toEntity());
   }
   delete(id) {
-    return this.userRepository.delete(id);
+    return this.userRoleRepository.delete(id);
   }
 }

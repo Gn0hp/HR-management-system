@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { PageMetadataParams } from './utils';
+import { PageMetadataParams } from './PageOptionsDto';
 
 export class PageMetaData {
   @ApiProperty()

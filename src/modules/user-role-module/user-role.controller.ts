@@ -17,7 +17,7 @@ import {
   queryParamBuilder,
   QueryParams,
 } from '../../commons/query_params';
-import {UserRole, UserRolePostRequest} from '../user-module/UserRole';
+import { UserRole, UserRolePostRequest } from './UserRole';
 import { ApiOperation, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { UserRoleDto } from '../../entities/dtos/UserRoleDto';
 import { JwtAuthGuard } from '../../auth/jwt/jwt';
@@ -163,5 +163,19 @@ export class UserRoleController {
   //@UseInterceptors(new AuthInterceptor(DELETE_PERMISSION))
   delete(@Param('id') id) {
     return this.service.delete(id);
+  }
+  @Delete('soft-delete/:id')
+  @UseInterceptors(AuthInterceptor)
+  @RequiredPermission(DELETE_PERMISSION)
+  @ApiOperation({
+    summary: 'Soft delete user-role',
+    description: 'Soft delete user-role, Require permission: D',
+  })
+  softDelete(@Param('id') id) {
+    const updatedUserRole: UserRole = {
+      is_deleted: true,
+      deleted_at: new Date(),
+    };
+    return this.service.update(id, new UserRoleDto(updatedUserRole));
   }
 }

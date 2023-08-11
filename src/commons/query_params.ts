@@ -13,7 +13,7 @@
 }*/
 import { applyDecorators } from '@nestjs/common';
 import { ApiQuery } from '@nestjs/swagger';
-import { Order, PageOptionsDto } from './pagination/utils';
+import { Order, PageOptionsDto } from './pagination/PageOptionsDto';
 
 export interface QueryParams {
   select?: any;

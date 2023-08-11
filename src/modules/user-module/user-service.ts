@@ -1,13 +1,16 @@
-import {InjectRedis} from '@liaoliaots/nestjs-redis';
-import {Injectable} from '@nestjs/common';
-import {Redis} from 'ioredis';
-import {User} from 'src/modules/user-module/User';
-import {UserRoleService} from '../user-role-module/user-role-service';
-import {UserRole} from 'src/modules/user-module/UserRole';
-import {InjectDataSource} from '@nestjs/typeorm';
-import {DataSource} from 'typeorm';
-import {IBaseService} from '../../commons/interfaces/IBaseService';
-import {UserDto} from '../../entities/dtos/UserDto';
+import { InjectRedis } from '@liaoliaots/nestjs-redis';
+import { Injectable } from '@nestjs/common';
+import { Redis } from 'ioredis';
+import { User } from 'src/modules/user-module/User';
+import { UserRoleService } from '../user-role-module/user-role-service';
+import { UserRole } from 'src/modules/user-role-module/UserRole';
+import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
+import { DataSource, Repository } from 'typeorm';
+import { IBaseService } from '../../commons/interfaces/IBaseService';
+import { UserDto } from '../../entities/dtos/UserDto';
+import { PageOptionsDto } from '../../commons/pagination/PageOptionsDto';
+import { PageDTO } from '../../commons/pagination/PageDTO';
+import { PageMetaData } from '../../commons/pagination/PageMetaData';
 
 @Injectable()
 export class UserService implements IBaseService {
@@ -15,8 +18,8 @@ export class UserService implements IBaseService {
 
   constructor(
     @InjectRedis() private readonly redis: Redis,
+    @InjectRepository(User) private userRepository: Repository<User>,
     @InjectDataSource() private readonly connection: DataSource,
-    private userRoleService: UserRoleService,
   ) {}
 
   async getNextUserId(): Promise<number> {
@@ -40,6 +43,20 @@ export class UserService implements IBaseService {
       res = users.map((user) => JSON.parse(user));
     });
     return res;
+  }
+  async findAllWithPage(options: PageOptionsDto): Promise<PageDTO<User>> {
+    const queryBuilder = this.userRepository.createQueryBuilder('user');
+    queryBuilder
+      .orderBy('user.created_at', options.order)
+      .skip(options.skip)
+      .take(options.take);
+    const itemCount = await queryBuilder.getCount();
+    const { entities } = await queryBuilder.getRawAndEntities();
+    const pageMetaDto = new PageMetaData({
+      pageOptionsDto: options,
+      itemCount,
+    });
+    return new PageDTO<User>(entities, pageMetaDto);
   }
   async findAllId() {
     const users = await this.findAll();
@@ -91,17 +108,17 @@ export class UserService implements IBaseService {
   async delete(id: number) {
     await this.redis.del(`user:${id}`);
   }
-  async findRolesByUserId(id: number): Promise<UserRole[]> {
-    return this.userRoleService
-      .findByUserId(id)
-      .then((res) => {
-        return res;
-      })
-      .catch((error) => {
-        console.log(error);
-        return null;
-      });
-  }
+  // async findRolesByUserId(id: number): Promise<UserRole[]> {
+  //   return this.userRoleService
+  //     .findByUserId(id)
+  //     .then((res) => {
+  //       return res;
+  //     })
+  //     .catch((error) => {
+  //       console.log(error);
+  //       return null;
+  //     });
+  // }
   public async getAllPermissionByUserId(user_id: number) {
     return this.connection
       .query(`select p.name from hr_management_system.permission p 

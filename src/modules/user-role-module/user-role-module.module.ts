@@ -5,7 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { RoleModuleModule } from '../role-module/role-module.module';
 import { UserRoleController } from './user-role.controller';
 import { UserModuleModule } from '../user-module/user-module.module';
-import { UserRole } from '../user-module/UserRole';
+import { UserRole } from './UserRole';
 
 @Module({
   imports: [

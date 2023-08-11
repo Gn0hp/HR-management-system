@@ -64,9 +64,12 @@ export class EmployeeFormService implements IBaseService {
   }
 
   async isSubmittedUserForm(userId: number, formId: number) {
+    const user = await this.userService.findById(userId);
     return await this.repository.findOne({
       where: {
-        userId,
+        user: {
+          id: user.id,
+        },
         form: {
           id: formId,
         },
@@ -77,7 +80,7 @@ export class EmployeeFormService implements IBaseService {
 
   async getAllUserCompleteFormByFormId(formId: number) {
     return await this.repository.find({
-      select: ['userId'],
+      select: ['user'],
       where: {
         form: {
           id: formId,
@@ -93,7 +96,7 @@ export class EmployeeFormService implements IBaseService {
   }
   async getAllUserNotCompleteFormByFormId(formId: number) {
     const employeeForms = await this.repository.find({
-      select: ['userId'],
+      select: ['user'],
       where: {
         form: {
           id: formId,
@@ -105,9 +108,7 @@ export class EmployeeFormService implements IBaseService {
         if (user.id) return user.id;
       });
     });
-    const userComplete = employeeForms.map(
-      (employeeForm) => employeeForm.userId,
-    );
+    const userComplete = employeeForms.map((employeeForm) => employeeForm.user);
     return allUser.filter((user) => user && !userComplete.includes(user));
   }
 }

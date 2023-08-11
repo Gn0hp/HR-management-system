@@ -4,7 +4,6 @@ import {
   Delete,
   Get,
   Param,
-  Patch,
   Post,
   Put,
   Query,
@@ -166,5 +165,25 @@ export class RoleControllerController {
   })
   delete(@Param('id') id) {
     return this.roleService.delete(id);
+  }
+  @Delete('soft-delete/:id')
+  @UseInterceptors(AuthInterceptor)
+  @RequiredPermission(DELETE_PERMISSION)
+  //@UseInterceptors(new AuthInterceptor(DELETE_PERMISSION))
+  @ApiOperation({
+    summary: 'Delete role',
+    description: 'Delete role, Permission DELETE_ROLE',
+  })
+  @ApiParam({
+    name: 'id',
+    type: Number,
+    description: 'role id',
+  })
+  softDelete(@Param('id') id) {
+    const updatedRole: Role = {
+      is_deleted: true,
+      deleted_at: new Date(),
+    };
+    return this.roleService.update(id, new RoleDto(updatedRole));
   }
 }

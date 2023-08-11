@@ -6,7 +6,7 @@ import { yamlParser } from '../../../utils/yamlParser';
 import { RolePermit } from 'src/modules/role-permit-module/RolePermit';
 import { Form } from 'src/modules/form-module/Form';
 import { EmployeeForm } from 'src/modules/employee-form-module/EmployeeForm';
-import { UserRole } from '../../../modules/user-module/UserRole';
+import { UserRole } from '../../../modules/user-role-module/UserRole';
 import { Role } from '../../../modules/role-module/Role';
 
 export function parseConfig(): TypeOrmModuleOptions {
@@ -25,5 +25,10 @@ export function parseConfig(): TypeOrmModuleOptions {
     synchronize: true,
     logging: true,
     migrations: ['src/database/migrations/*{.ts,.js}'],
+    retryAttempts: 10,
+    retryDelay: 3000,
+    keepConnectionAlive: true,
+    verboseRetryLog: true,
+    autoLoadEntities: true,
   };
 }
