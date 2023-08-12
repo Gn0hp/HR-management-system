@@ -15,6 +15,9 @@ import {
   FORM_STATUS_NEW,
 } from '../../commons/globals/Constants';
 import { format, addDays } from 'date-fns';
+import { PageOptionsDto } from '../../commons/pagination/PageOptionsDto';
+import { PageDTO } from '../../commons/pagination/PageDTO';
+import { PageMetaData } from '../../commons/pagination/PageMetaData';
 
 @Injectable()
 export class FormService implements IBaseService {
@@ -40,6 +43,21 @@ export class FormService implements IBaseService {
     return this.formRepository.find(options);
   }
 
+  async findAllMsql(options?: PageOptionsDto): Promise<PageDTO<Form>> {
+    const queryBuilder = this.formRepository.createQueryBuilder('form');
+    queryBuilder
+      .orderBy('form.created_at', options.order)
+      .skip(options.skip)
+      .take(options.take);
+    const itemCount = await queryBuilder.getCount();
+    const { entities } = await queryBuilder.getRawAndEntities();
+    const pageMetaDto = new PageMetaData({
+      pageOptionsDto: options,
+      itemCount,
+    });
+    return new PageDTO<Form>(entities, pageMetaDto);
+  }
+
   findById(id: number) {
     return this.formRepository.findOne({ where: { id } });
   }
@@ -50,14 +68,31 @@ export class FormService implements IBaseService {
       ...options,
     });
   }
-
+  async findByIdsMsql(
+    idsString: string[],
+    options?: PageOptionsDto,
+  ): Promise<PageDTO<Form>> {
+    const queryBuilder = this.formRepository.createQueryBuilder('form');
+    const ids = idsString.map((id) => parseInt(id));
+    queryBuilder
+      .where('form.id IN (:...ids)', { ids })
+      .orderBy('form.created_at', options.order)
+      .skip(options.skip)
+      .take(options.take);
+    const itemCount = await queryBuilder.getCount();
+    const { entities } = await queryBuilder.getRawAndEntities();
+    const pageMetaDto = new PageMetaData({
+      pageOptionsDto: options,
+      itemCount,
+    });
+    return new PageDTO<Form>(entities, pageMetaDto);
+  }
   async findByOptions(condition: any, options?: QueryParams) {
     return await this.formRepository.find({
       where: condition,
       ...options,
     });
   }
-
   async findOneByOptions(condition: any) {
     return await this.formRepository.findOne(condition);
   }
@@ -110,7 +145,7 @@ export class FormService implements IBaseService {
 
   // Cron at 00:00:00 every day scan nearly expire date (1 day from now) to notify
   // @Cron('0 0 0 * * *')
-  @Cron('0 * * * * *')   // for testing
+  @Cron('0 * * * * *') // for testing
   async reportService() {
     this.findsWithDateDaysAfterCurrentDate().then((res) => {
       this.logger.log('findsWithDateDaysAfterCurrentDate return: ', res);

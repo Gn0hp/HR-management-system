@@ -29,6 +29,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import {
+  CommonPageQueryParam,
   CommonQueryParam,
   parseQuery,
   queryParamBuilder,
@@ -84,6 +85,11 @@ export class UserControllerController {
   @Get('get-msql')
   @UseInterceptors(AuthInterceptor)
   @RequiredPermission(READ_PERMISSION)
+  @CommonPageQueryParam()
+  @ApiOperation({
+    summary: 'Get all user with pagination',
+    description: 'Get all user with pagination, Permission: READ_USER.',
+  })
   findAllMsql(@Query() options: PageOptionsDto) {
     return this.userService.findAllWithPage(options);
   }
@@ -108,6 +114,25 @@ export class UserControllerController {
       throw new Error('ids must be string like "1,2,3"');
     const ids = query.ids.split(',');
     return this.userService.findByIds(ids, queryParamBuilder(query));
+  }
+  @Get('get-by-ids-msql')
+  @UseInterceptors(AuthInterceptor)
+  @RequiredPermission(READ_PERMISSION)
+  @CommonPageQueryParam()
+  @ApiOperation({
+    summary: 'Get users by ids',
+    description: 'Get users by ids, Permission: Read Permission',
+  })
+  @ApiQuery({
+    name: 'ids',
+    type: String,
+    description: 'role ids',
+    example: 'ids=1,2,3',
+  })
+  findByIdsMsql(@Query() query: PageOptionsDto, @Query('ids') ids: string) {
+    if (!ids) throw new Error('ids is required');
+    if (typeof ids !== 'string') throw new Error('ids must be string');
+    return this.userService.findByIdsMsql(ids.split(','), query);
   }
   @Get('get-roles/:id')
   @UseInterceptors(AuthInterceptor)

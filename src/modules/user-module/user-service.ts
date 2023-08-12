@@ -44,7 +44,7 @@ export class UserService implements IBaseService {
     });
     return res;
   }
-  async findAllWithPage(options: PageOptionsDto): Promise<PageDTO<User>> {
+  async findAllWithPage(options?: PageOptionsDto): Promise<PageDTO<User>> {
     const queryBuilder = this.userRepository.createQueryBuilder('user');
     queryBuilder
       .orderBy('user.created_at', options.order)
@@ -86,6 +86,25 @@ export class UserService implements IBaseService {
       return condition.includes(user.id);
     });
     return res;
+  }
+  async findByIdsMsql(
+    idsString: string[],
+    options?: PageOptionsDto,
+  ): Promise<PageDTO<User>> {
+    const queryBuilder = this.userRepository.createQueryBuilder('user');
+    const ids = idsString.map((id) => parseInt(id));
+    queryBuilder
+      .where('user.id IN (:...ids)', { ids })
+      .orderBy('user.created_at', options.order)
+      .skip(options.skip)
+      .take(options.take);
+    const itemCount = await queryBuilder.getCount();
+    const { entities } = await queryBuilder.getRawAndEntities();
+    const pageMetaDto = new PageMetaData({
+      pageOptionsDto: options,
+      itemCount,
+    });
+    return new PageDTO<User>(entities, pageMetaDto);
   }
   findOneByOptions(condition, options?: any) {
     throw new Error('Method not implemented.');

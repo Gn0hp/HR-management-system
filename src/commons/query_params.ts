@@ -57,6 +57,31 @@ export const CommonQueryParam = () => {
     }),
   );
 };
+export const CommonPageQueryParam = () => {
+  return applyDecorators(
+    ApiQuery({
+      name: 'order',
+      required: false,
+      enum: Order,
+      example: 'order=ASC',
+      description: 'order by created_at',
+    }),
+    ApiQuery({
+      name: 'page',
+      required: false,
+      type: 'number',
+      example: 'page=1',
+      description: 'page number',
+    }),
+    ApiQuery({
+      name: 'take',
+      required: false,
+      type: 'number',
+      example: 'take=10',
+      description: 'number of items per page',
+    }),
+  );
+};
 // template url: http://<host>:<port>/get?
 // select=columnName1,columnName2
 // &sortBy=columnName1:ASC,columnName2:DESC

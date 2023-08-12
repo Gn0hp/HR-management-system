@@ -48,12 +48,14 @@ import {
   IEmployeeSubmitBody,
 } from '../../internal/RequestPostBody';
 import {
+  CommonPageQueryParam,
   CommonQueryParam,
   parseQuery,
   queryParamBuilder,
 } from '../../commons/query_params';
 import { ResponseInterceptor } from '../../commons/CommonResponse';
 import { JwtPayload } from '../../auth/jwt/jwtPayload';
+import {PageOptionsDto} from "../../commons/pagination/PageOptionsDto";
 
 @Controller('forms')
 @UseGuards(JwtAuthGuard)
@@ -305,10 +307,21 @@ export class FormController {
     summary: 'Get all form',
     description: 'Get all form, Permission: READ_FORM_PERMISSION',
   })
-  findAll(@Query() query) {
+  findAll(@Query() query: any) {
     return this.service.findAll(queryParamBuilder(query));
   }
-
+  @Get('get-msql')
+  @CommonPageQueryParam()
+  @UseInterceptors(AuthInterceptor)
+  @UseInterceptors(ResponseInterceptor)
+  @RequiredPermission(READ_FORM_PERMISSION)
+  @ApiOperation({
+    summary: 'Get all form with page',
+    description: 'Get all form, Permission: READ_FORM_PERMISSION',
+  })
+  findAllMsql(@Query() query: PageOptionsDto) {
+    return this.service.findAllMsql(query);
+  }
   @Get('get-by-id/:id')
   @UseInterceptors(AuthInterceptor)
   @RequiredPermission(READ_FORM_PERMISSION)
