@@ -1,12 +1,10 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { IsEnum, IsInt, IsOptional, Max, Min } from 'class-validator';
+import { IsEnum, IsInt, IsOptional, IsString, Max, Min } from 'class-validator';
 import { Type } from 'class-transformer';
 
 export enum Order {
   ASC = 'ASC',
   DESC = 'DESC',
-  asc = 'asc',
-  desc = 'desc',
 }
 
 export class PageOptionsDto {
@@ -30,8 +28,25 @@ export class PageOptionsDto {
   @IsOptional()
   readonly take: number = 10;
 
+  @ApiPropertyOptional({
+    example: 'orderBy=name:ASC,age:DESC',
+  })
+  @Type(() => String)
+  @IsString()
+  @IsOptional()
+  readonly orderBy: string;
+
   get skip(): number {
     return (this.page - 1) * this.take;
+  }
+  getOrdersBy(): any {
+    const orders = this.orderBy.split(',');
+    const result = {};
+    for (const order of orders) {
+      const [key, value] = order.split(':');
+      result[`user.${key}`] = value;
+    }
+    return result;
   }
 }
 export interface PageMetadataParams {

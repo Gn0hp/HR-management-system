@@ -2,6 +2,7 @@ import { Column, Entity, ManyToOne } from 'typeorm';
 import { DefaultModel } from '../../entities/DefaultModel';
 import { Form } from '../form-module/Form';
 import { ApiProperty } from '@nestjs/swagger';
+import {User} from "../user-module/User";
 
 @Entity()
 export class EmployeeForm extends DefaultModel {
@@ -32,7 +33,7 @@ export class EmployeeForm extends DefaultModel {
   //   permissions: Permission[];
   @ManyToOne(() => Form, (form) => form.employeeForms)
   form?: Form;
-  // @ManyToOne(() => User, (user) => user.employeeForms)
-  @Column()
-  userId?: number;
+  @ManyToOne(() => User, (user) => user.employeeForms)
+  // @Column()
+  user?: User;
 }

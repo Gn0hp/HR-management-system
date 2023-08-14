@@ -13,7 +13,7 @@
 }*/
 import { applyDecorators } from '@nestjs/common';
 import { ApiQuery } from '@nestjs/swagger';
-import { Order, PageOptionsDto } from './pagination/utils';
+import { Order, PageOptionsDto } from './pagination/PageOptionsDto';
 
 export interface QueryParams {
   select?: any;
@@ -54,6 +54,31 @@ export const CommonQueryParam = () => {
       required: false,
       type: 'boolean',
       example: 'cache=true',
+    }),
+  );
+};
+export const CommonPageQueryParam = () => {
+  return applyDecorators(
+    ApiQuery({
+      name: 'order',
+      required: false,
+      enum: Order,
+      example: 'order=ASC',
+      description: 'order by created_at',
+    }),
+    ApiQuery({
+      name: 'page',
+      required: false,
+      type: 'number',
+      example: 'page=1',
+      description: 'page number',
+    }),
+    ApiQuery({
+      name: 'take',
+      required: false,
+      type: 'number',
+      example: 'take=10',
+      description: 'number of items per page',
     }),
   );
 };

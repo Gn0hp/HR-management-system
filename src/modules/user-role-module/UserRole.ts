@@ -2,6 +2,7 @@ import { Column, Entity, ManyToOne } from 'typeorm';
 import { DefaultModel } from '../../entities/DefaultModel';
 import { Role } from '../role-module/Role';
 import { ApiProperty } from '@nestjs/swagger';
+import { User } from '../user-module/User';
 
 @Entity()
 export class UserRole extends DefaultModel {
@@ -29,9 +30,8 @@ export class UserRole extends DefaultModel {
   @ApiProperty()
   note?: string;
 
-  // @ManyToOne(() => User, (user) => user.userRoles)
-  @Column()
-  userId?: number;
+  @ManyToOne(() => User, (user) => user.userRoles)
+  user?: User;
 
   @ManyToOne(() => Role, (role) => role.userRoles)
   role?: Role;

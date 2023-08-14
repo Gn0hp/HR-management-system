@@ -48,12 +48,14 @@ import {
   IEmployeeSubmitBody,
 } from '../../internal/RequestPostBody';
 import {
+  CommonPageQueryParam,
   CommonQueryParam,
   parseQuery,
   queryParamBuilder,
 } from '../../commons/query_params';
 import { ResponseInterceptor } from '../../commons/CommonResponse';
 import { JwtPayload } from '../../auth/jwt/jwtPayload';
+import {PageOptionsDto} from "../../commons/pagination/PageOptionsDto";
 
 @Controller('forms')
 @UseGuards(JwtAuthGuard)
@@ -157,9 +159,10 @@ export class FormController {
         payload.userId,
         body.formId,
       );
+    const user = await this.userService.findById(payload.userId);
     const employeeForm: EmployeeForm = {
       status: EMPLOYEE_FORM_STATUS_SUBMITTED,
-      userId: payload.userId,
+      user,
       form: formDb,
     };
     if (body.note) employeeForm.note = body.note;
@@ -204,7 +207,7 @@ export class FormController {
   }
   @Post('reject')
   @UseInterceptors(AuthInterceptor)
-  @RequiredPermission(APPROVE_FORM_PERMISSION)
+  @RequiredPermission([APPROVE_FORM_PERMISSION, READ_FORM_PERMISSION])
   @ApiOperation({
     summary: 'Reject form',
     description: 'Reject form, Permission: APPROVE_FORM_PERMISSION',
@@ -304,10 +307,21 @@ export class FormController {
     summary: 'Get all form',
     description: 'Get all form, Permission: READ_FORM_PERMISSION',
   })
-  findAll(@Query() query) {
+  findAll(@Query() query: any) {
     return this.service.findAll(queryParamBuilder(query));
   }
-
+  @Get('get-msql')
+  @CommonPageQueryParam()
+  @UseInterceptors(AuthInterceptor)
+  @UseInterceptors(ResponseInterceptor)
+  @RequiredPermission(READ_FORM_PERMISSION)
+  @ApiOperation({
+    summary: 'Get all form with page',
+    description: 'Get all form, Permission: READ_FORM_PERMISSION',
+  })
+  findAllMsql(@Query() query: PageOptionsDto) {
+    return this.service.findAllMsql(query);
+  }
   @Get('get-by-id/:id')
   @UseInterceptors(AuthInterceptor)
   @RequiredPermission(READ_FORM_PERMISSION)
@@ -401,6 +415,24 @@ export class FormController {
   })
   delete(@Param('id') id: number) {
     return this.service.delete(id);
+  }
+  @Delete('soft-delete/:id')
+  @UseInterceptors(AuthInterceptor)
+  @RequiredPermission(DELETE_FORM_PERMISSION)
+  @ApiOperation({
+    summary: 'Delete form by id',
+    description: 'Delete form by id, Permission: DELETE_FORM_PERMISSION',
+  })
+  @ApiParam({
+    name: 'id',
+    type: Number,
+  })
+  softDelete(@Param('id') id: number) {
+    const updated: Form = {
+      is_deleted: true,
+      deleted_at: new Date(),
+    };
+    return this.service.update(id, new FormDto(updated));
   }
 
   @Put('update/:id')

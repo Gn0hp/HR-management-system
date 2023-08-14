@@ -163,4 +163,24 @@ export class PermissionControllerController {
   delete(@Param('id') id) {
     return this.service.delete(id);
   }
+  @Delete('soft-delete/:id')
+  @UseInterceptors(AuthInterceptor)
+  @RequiredPermission(DELETE_PERMISSION)
+  //@UseInterceptors(new AuthInterceptor(DELETE_PERMISSION))
+  @ApiOperation({
+    summary: 'Delete permission',
+    description: 'Delete permission, Permission: DELETE_PERMISSION',
+  })
+  @ApiParam({
+    name: 'id',
+    type: Number,
+    description: 'permission id',
+  })
+  softDelete(@Param('id') id) {
+    const updated: Permission = {
+      is_deleted: true,
+      deleted_at: new Date(),
+    };
+    return this.service.update(id, new PermissionDto(updated));
+  }
 }

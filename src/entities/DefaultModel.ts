@@ -44,4 +44,13 @@ export class DefaultModel {
     description: 'id of user who created this record',
   })
   deleted_by?: number; // id of user
+
+  @Column({
+    default: 0,
+    type: 'boolean',
+  })
+  @ApiProperty({
+    description: 'is this record deleted: false, true - soft delete',
+  })
+  is_deleted?: boolean; //
 }

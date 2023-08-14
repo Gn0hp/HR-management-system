@@ -1,10 +1,10 @@
-import { Column } from 'typeorm';
+import { Column, Entity, OneToMany } from 'typeorm';
 import { DefaultModel } from '../../entities/DefaultModel';
 import { EmployeeForm } from '../employee-form-module/EmployeeForm';
-import { UserRole } from './UserRole';
+import { UserRole } from '../user-role-module/UserRole';
 import { ApiProperty } from '@nestjs/swagger';
 
-// @Entity()
+@Entity()
 export class User extends DefaultModel {
   @Column({
     nullable: true,
@@ -90,9 +90,9 @@ export class User extends DefaultModel {
   @Column()
   refreshToken?: string;
 
-  // @OneToMany(() => UserRole, (userRole) => userRole.user)
+  @OneToMany(() => UserRole, (userRole) => userRole.user)
   userRoles?: UserRole[];
 
-  // @OneToMany(() => EmployeeForm, (employeeForm) => employeeForm.user)
+  @OneToMany(() => EmployeeForm, (employeeForm) => employeeForm.user)
   employeeForms?: EmployeeForm[];
 }

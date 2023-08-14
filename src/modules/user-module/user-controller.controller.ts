@@ -21,11 +21,23 @@ import {
   RequiredPermission,
 } from '../auth-module/auth.interceptor';
 import { User } from './User';
-import {ApiBody, ApiOperation, ApiParam, ApiQuery, ApiTags} from '@nestjs/swagger';
-import {CommonQueryParam, parseQuery, queryParamBuilder} from '../../commons/query_params';
+import {
+  ApiBody,
+  ApiOperation,
+  ApiParam,
+  ApiQuery,
+  ApiTags,
+} from '@nestjs/swagger';
+import {
+  CommonPageQueryParam,
+  CommonQueryParam,
+  parseQuery,
+  queryParamBuilder,
+} from '../../commons/query_params';
 import { ResponseInterceptor } from '../../commons/CommonResponse';
 import { JwtPayload } from '../../auth/jwt/jwtPayload';
 import { GetUser, JwtAuthGuard } from '../../auth/jwt/jwt';
+import { PageOptionsDto } from '../../commons/pagination/PageOptionsDto';
 
 @Controller('users')
 @UseGuards(JwtAuthGuard)
@@ -70,6 +82,18 @@ export class UserControllerController {
     return this.userService.findAll();
   }
 
+  @Get('get-msql')
+  @UseInterceptors(AuthInterceptor)
+  @RequiredPermission(READ_PERMISSION)
+  @CommonPageQueryParam()
+  @ApiOperation({
+    summary: 'Get all user with pagination',
+    description: 'Get all user with pagination, Permission: READ_USER.',
+  })
+  findAllMsql(@Query() options: PageOptionsDto) {
+    return this.userService.findAllWithPage(options);
+  }
+
   @Get('get-by-ids')
   @UseInterceptors(AuthInterceptor)
   @RequiredPermission(READ_PERMISSION)
@@ -90,6 +114,25 @@ export class UserControllerController {
       throw new Error('ids must be string like "1,2,3"');
     const ids = query.ids.split(',');
     return this.userService.findByIds(ids, queryParamBuilder(query));
+  }
+  @Get('get-by-ids-msql')
+  @UseInterceptors(AuthInterceptor)
+  @RequiredPermission(READ_PERMISSION)
+  @CommonPageQueryParam()
+  @ApiOperation({
+    summary: 'Get users by ids',
+    description: 'Get users by ids, Permission: Read Permission',
+  })
+  @ApiQuery({
+    name: 'ids',
+    type: String,
+    description: 'role ids',
+    example: 'ids=1,2,3',
+  })
+  findByIdsMsql(@Query() query: PageOptionsDto, @Query('ids') ids: string) {
+    if (!ids) throw new Error('ids is required');
+    if (typeof ids !== 'string') throw new Error('ids must be string');
+    return this.userService.findByIdsMsql(ids.split(','), query);
   }
   @Get('get-roles/:id')
   @UseInterceptors(AuthInterceptor)
@@ -149,6 +192,25 @@ export class UserControllerController {
           message: err,
         };
       });
+  }
+  @Delete('soft-delete/:id')
+  @UseInterceptors(AuthInterceptor)
+  @RequiredPermission(DELETE_PERMISSION)
+  @ApiOperation({
+    summary: 'Soft delete user by id',
+    description: 'Soft delete user by id, Permission: DELETE_USER.',
+  })
+  @ApiParam({
+    name: 'id',
+    type: Number,
+    description: 'user id',
+  })
+  async softDelete(@Param('id') id: number) {
+    const updatedUser: User = {
+      is_deleted: true,
+      deleted_at: new Date(),
+    };
+    return this.userService.update(id, updatedUser);
   }
   @Put('update/:id')
   @UseInterceptors(AuthInterceptor)

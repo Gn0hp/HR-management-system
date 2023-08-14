@@ -1,5 +1,5 @@
 import { IBaseDTO } from './IBaseDTO';
-import { UserRole } from '../../modules/user-module/UserRole';
+import { UserRole } from '../../modules/user-role-module/UserRole';
 
 export class UserRoleDto implements IBaseDTO {
   userRole: UserRole;

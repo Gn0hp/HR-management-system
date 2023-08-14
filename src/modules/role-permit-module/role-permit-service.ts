@@ -23,6 +23,14 @@ export class RolePermitService implements IBaseService {
     return await this.repository.delete(id);
   }
 
+  async softDelete(id: number) {
+    const updatedRolePermit: RolePermit = {
+      is_deleted: true,
+      deleted_at: new Date(),
+    };
+    return this.update(id, new RolePermitDto(updatedRolePermit));
+  }
+
   async findAll(options?: any) {
     return await this.repository.find(options);
   }
